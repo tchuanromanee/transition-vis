@@ -8,9 +8,9 @@ var svgContainer = d3.select("#main").append("svg")
 var path = d3.path();
 path.moveTo(300,120);
 path.bezierCurveTo(325, 110, 300, 50, 350, 50) //the head (left and a little of the top)
-path.bezierCurveTo(375, 50, 370, 120, 395, 120) //the head (right)
-path.bezierCurveTo(445, 170, 485, 170, 490, 200) //the right arm, top
-path.bezierCurveTo(475, 220, 400, 150, 395, 190) //the bottom of the right arm
+path.bezierCurveTo(375, 50, 360, 120, 390, 119) //the head (right)
+path.bezierCurveTo(400, 119, 459, 180, 490, 200) //the right arm, top
+path.bezierCurveTo(495, 240, 400, 150, 395, 190) //the bottom of the right arm
 path.bezierCurveTo(380, 250, 450, 395, 425, 400) //the right leg, right side
 path.bezierCurveTo(390, 390, 400, 305, 350, 260) //the right leg, left side
 path.bezierCurveTo(300, 240, 300, 390, 275, 400) //the left leg, right side
