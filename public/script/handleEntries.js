@@ -12,6 +12,31 @@ function serverget()
    xmlhttp.send();
 }
 
+function parseEntries() {
+  for (let i = 0; i < entriesArray.length; i++) {
+    console.log(entriesArray[i].Title);
+  }
+}
+
+//parseEntries();
+
+function drawDots() {
+  // For each entry, draw the dot on the timeline
+  for (let i = 0; i < entriesArray.length; i++) {
+    console.log(entriesArray[i].TimelinePositionX);
+    var xPos = entriesArray[i].TimelinePositionX;
+    var yPos = entriesArray[i].TimelinePositionY;
+
+    svgContainer.append('circle')
+      .attr('cx', xPos)
+      .attr('cy', yPos)
+      .attr('r', 8)
+      .style('fill', 'green');
+  }
+}
+
+// Draw the timeline
+
 var timeline = d3.line();
 // Eventually, we will populate the timelinepoints with data taken from the entries
 var timelinePoints = [
@@ -26,6 +51,6 @@ svgContainer.append("path")
     .attr("stroke", "black")
     .attr("fill", "none")
     .attr("Stroke-width", "2");
-//serverget();
 
-//misc left off: https://www.digitalocean.com/community/tutorials/how-to-create-a-web-server-in-node-js-with-the-http-module
+
+drawDots();
