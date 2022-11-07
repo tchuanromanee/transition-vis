@@ -35,6 +35,7 @@ var timelinePoints = [
     [150, 30],
     [600, 20]
 ];
+console.log(timelinePoints);
 var timelinePath = timeline(timelinePoints);
 
 svgContainer.append("path")

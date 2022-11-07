@@ -1,0 +1,22 @@
+{
+  "name": "transition-vis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tchuanromanee/transition-vis.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tchuanromanee/transition-vis/issues"
+  },
+  "homepage": "https://github.com/tchuanromanee/transition-vis#readme",
+  "dependencies": {
+    "ejs": "^3.1.8"
+  }
+}

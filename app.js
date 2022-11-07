@@ -1,11 +1,19 @@
 var connect = require('connect');
 var serveStatic = require('serve-static');
 var express = require('express');
+var url = require('url');
 var http = require("http");
 const fs = require('fs');
+var app = express();
 
+// set the view engine to ejs
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public'));
 
+var choices = ["hello world", "goodbye world"];
 var entriesArray;
+
+
 const newEntry = {
   "entryID": 4,
   "Type": "Body",
@@ -78,25 +86,45 @@ function writeEntries() {
 const host = 'localhost';
 const port = 8080;
 var path = "";
-let handleRequest = connect().use(express.static(__dirname + path));/*(request, response) => {
-    response.writeHead(200, {
-        'Content-Type': 'text/html'
-    });
-    fs.readFile('./index.html', null, function (error, data) {
-        if (error) {
-            response.writeHead(404);
-            respone.write('Whoops! File not found!');
-        } else {
-            response.write(data);
-        }
-        response.end();
-    });
-};*/
 
 
-const server = http.createServer(handleRequest).listen(8080);
+//STATIC
+//let handleRequest = connect().use(express.static(__dirname + path));
 
 
+
+//TESTING GROUND
+
+// index page
+app.get('/', function(req, res) {
+  res.render('pages/index');
+});
+
+let handleRequest = (request, response) => {
+
+      var path = url.parse(request.url).pathname;
+      if(path=="/getstring"){
+          console.log("request recieved");
+          var string = choices[Math.floor(Math.random()*choices.length)];
+          response.writeHead(200, {"Content-Type": "text/html"});
+          response.end(string);
+          console.log("string sent");
+      }else{
+          fs.readFile('./index.html', function(err, file) {
+              if(err) {
+                  // write an error response or nothing here
+                  return;
+              }
+              response.writeHead(200, { 'Content-Type': 'text/html' });
+              response.end(file, "utf-8");
+          });
+      }
+};
+
+
+const server = http.createServer(handleRequest).listen(port);
+readEntries(writeEntries);
+module.exports = entriesArray;
 //const server = http.createServer(requestListener);
 //server.listen(port, host, () => {
 //    console.log(`Server is running on http://${host}:${port}`);
