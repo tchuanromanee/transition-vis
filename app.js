@@ -10,10 +10,9 @@ var app = express();
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
-var choices = ["hello world", "goodbye world"];
+// use res.render to load up an ejs view file
+
 var entriesArray;
-
-
 const newEntry = {
   "entryID": 4,
   "Type": "Body",
@@ -80,60 +79,27 @@ function writeEntries() {
 });
 }
 
-
-
-//Start up the server
-const host = 'localhost';
-const port = 8080;
-var path = "";
-
-
-//STATIC
-//let handleRequest = connect().use(express.static(__dirname + path));
-
-
-
-//TESTING GROUND
-
 // index page
 app.get('/', function(req, res) {
-  res.render('pages/index');
+  var mascots = [
+    { name: 'Sammy', organization: "DigitalOcean", birth_year: 2012},
+    { name: 'Tux', organization: "Linux", birth_year: 1996},
+    { name: 'Moby Dock', organization: "Docker", birth_year: 2013}
+  ];
+  var tagline = "No programming concept is complete without a cute animal mascot.";
+
+  res.render('pages/index', {
+    entriesArray: entriesArray,
+    tagline: tagline
+  });
 });
 
-let handleRequest = (request, response) => {
+// about page
+app.get('/about', function(req, res) {
+  res.render('pages/about');
+});
 
-      var path = url.parse(request.url).pathname;
-      if(path=="/getstring"){
-          console.log("request recieved");
-          var string = choices[Math.floor(Math.random()*choices.length)];
-          response.writeHead(200, {"Content-Type": "text/html"});
-          response.end(string);
-          console.log("string sent");
-      }else{
-          fs.readFile('./index.html', function(err, file) {
-              if(err) {
-                  // write an error response or nothing here
-                  return;
-              }
-              response.writeHead(200, { 'Content-Type': 'text/html' });
-              response.end(file, "utf-8");
-          });
-      }
-};
-
-
-const server = http.createServer(handleRequest).listen(port);
 readEntries(writeEntries);
-module.exports = entriesArray;
-//const server = http.createServer(requestListener);
-//server.listen(port, host, () => {
-//    console.log(`Server is running on http://${host}:${port}`);
-      //readEntries();
-//      readEntries(writeEntries);
-      //writeEntries();
 
-//});
-
-// connect()
-//     .use(serveStatic(__dirname))
-//     .listen(8080, () => console.log('Server running on 8080...'));
+app.listen(8080);
+console.log('Server is listening on port 8080');
