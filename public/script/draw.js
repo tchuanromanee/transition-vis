@@ -26,23 +26,8 @@ bodyPath.closePath();
     // curveBasis is used
 //    .curve(d3.curveBasisClosed);
 
-// Draw the initial TimelineID
+// Draw the initial Timeline
 
-var timeline = d3.line();
-// Eventually, we will populate the timelinepoints with data taken from the entries
-var timelinePoints = [
-    [100, 20],
-    [150, 30],
-    [600, 20]
-];
-console.log(timelinePoints);
-var timelinePath = timeline(timelinePoints);
-
-svgContainer.append("path")
-    .attr("d", timelinePath)
-    .attr("stroke", "black")
-    .attr("fill", "none")
-    .attr("Stroke-width", "2");
 
 svgContainer.append("path")
     .attr("d", bodyPath)
