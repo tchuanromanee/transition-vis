@@ -19,7 +19,10 @@ function parseEntries() {
 //parseEntries();
 
 function displayEntry() {
-  console.log("Displaying...")
+  $("#dateLabel").text("Date: ");
+  $("#dateSpan").text("Date test");
+  $("#titleSpan").text("Title test");
+  $("#captionSpan").text("Caption test");
 }
 
 function drawDotsAndTimeline() {
@@ -31,7 +34,7 @@ function drawDotsAndTimeline() {
     var yPos = entriesArray[i].TimelinePositionY;
     var emotionColor = entriesArray[i].EmotionColor;
     timelinePoints.push([xPos, yPos]);
-    svgContainer.append('circle')
+    svgTimelineContainer.append('circle')
       .attr('cx', xPos)
       .attr('cy', yPos)
       .attr('r', 8)
@@ -45,7 +48,7 @@ function drawDotsAndTimeline() {
 
   var timelinePath = timeline(timelinePoints);
 
-  svgContainer.append("path")
+  svgTimelineContainer.append("path")
       .attr("d", timelinePath)
       .attr("stroke", "black")
       .attr("fill", "none")
@@ -78,7 +81,9 @@ function drawBodyDots() {
   }
 }
 
-
+var svgTimelineContainer = d3.select("#timelinediv").append("svg")
+  	.attr("width", 960)
+  	.attr("id", "#timelineSVG");
 
 
 drawBodyDots();

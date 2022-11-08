@@ -29,10 +29,22 @@
 
 <body>
 
-			<div id ="main">
-        <h2>Variable</h2>
-    <p><%= entriesArray %></p>
+			<div class = "container-fluid">
+      <div class="row">
+        <div class="col" id="timelinediv">
         </div>
+      </div>
+        <div class= "row">
+          <div class = "col-sm-4" id ="main">
+          </div>
+          <div class ="col-sm-8" id="infoDiv">
+            <span id = "dateLabel">&nbsp;</span> <span id = "dateSpan">&nbsp;</span><br />
+            <span id = "titleSpan">&nbsp;</span><br />
+            <span id = "captionSpan">&nbsp;</span><br />
+          </div>
+        </div>
+  <!--  <p><%= entriesArray %></p>-->
+      </div>
         <script>
           // quick and dirty import variables
           let entriesArray = <%- JSON.stringify(entriesArray) %>;

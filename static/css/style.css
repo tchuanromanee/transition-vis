@@ -2,19 +2,12 @@ body {
     background-color: #FFFFFF;
     font-size: 12pt;
     font-family: sans-serif, arial;
-	overflow: visible;
 }
 
 
 /* Div definitions */
-/* The div is an ID because maincontent will only occur once */
-#maincontent {
-    position: relative;
-    padding: 15px;
-    margin: auto;
-    background-color: white;
-    width: 60%;
-    text-align: justify;
+#main {
+    background-color: #EEEEEE;
 	overflow: visible;
 }
 
@@ -23,18 +16,4 @@ svg {
     -webkit-filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.3) );
     filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.25) );
 	overflow: visible;
-}
-
-/*Styling for the lines connecting the labels to the slices*/
-polyline{
-    opacity: .3;
-    stroke: black;
-    stroke-width: 2px;
-    fill: none;
-    shape-rendering: geometricPrecision;
-}
-
-/* styling for the donut slices*/
-path {
-    shape-rendering: geometricPrecision;
 }
