@@ -35,6 +35,10 @@ function displayEntry() {
   $("#titleSpan").text(thisEntry.Title);
   $("#captionSpan").text(thisEntry.Caption);
 
+
+  $("#editEntryButton").show();
+  $("#deleteEntryButton").show();
+
   if (entriesArray[0].Type == "Body") {
     // Show the first dot
     document.getElementById("test1").style.display = "block";
