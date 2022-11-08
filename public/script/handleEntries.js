@@ -16,13 +16,34 @@ function parseEntries() {
   }
 }
 
+function getEntryByID(entryIDtoFind) {
+  for (let i = 0; i < entriesArray.length; i++) {
+    if (entriesArray[i].entryID == entryIDtoFind) {
+      return entriesArray[i];
+    }
+  }
+}
 //parseEntries();
 
 function displayEntry() {
+  var idOfCircle = d3.select(this).attr('id').slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+  var thisEntry = getEntryByID(idOfCircle); //-1 for offsetting (ASSUMES THE ENTRY ID AND)
+  console.log(thisEntry); // returns the circle that was clicked
+
   $("#dateLabel").text("Date: ");
-  $("#dateSpan").text("Date test");
-  $("#titleSpan").text("Title test");
-  $("#captionSpan").text("Caption test");
+  $("#dateSpan").text(thisEntry.Date);
+  $("#titleSpan").text(thisEntry.Title);
+  $("#captionSpan").text(thisEntry.Caption);
+
+  if (entriesArray[0].Type == "Body") {
+    // Show the first dot
+    document.getElementById("test1").style.display = "block";
+
+  }
+}
+
+function addNewEntry(){
+  console.log("Add new entry");
 }
 
 function drawDotsAndTimeline() {
@@ -34,11 +55,19 @@ function drawDotsAndTimeline() {
     var yPos = entriesArray[i].TimelinePositionY;
     var emotionColor = entriesArray[i].EmotionColor;
     timelinePoints.push([xPos, yPos]);
+    var circleID = "circle" + entriesArray[i].entryID;
     svgTimelineContainer.append('circle')
       .attr('cx', xPos)
       .attr('cy', yPos)
+      .attr('id', circleID)
       .attr('r', 8)
       .style('fill', emotionColor)
+      .on("mouseover", function(d) {
+          d3.select(this).style("fill", "#fff8ee");
+      })
+      .on("mouseout", function(d) {
+          d3.select(this).style("fill", emotionColor);
+      })
       .on("mousedown", displayEntry); // TODO: Check if click and drag will change
   }
   // Draw the timeline
