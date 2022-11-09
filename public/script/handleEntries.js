@@ -33,7 +33,12 @@ function getEntryIndexByID(entryIDtoFind) {
 }
 
 function deleteVisibleEntry() {
-  console.log("Deleting entry");
+  if (confirm('Are you sure you want to delete this?')) {
+    console.log("Deleting entry");
+  } else {
+    return;
+  }
+
   var indexToDelete = getEntryIndexByID(currentlyVisibleEntryID);
   entriesArray.splice(indexToDelete, 1);
   console.log(entriesArray);
