@@ -43,11 +43,25 @@ function deleteVisibleEntry() {
   entriesArray.splice(indexToDelete, 1);
   console.log(entriesArray);
 
-  //TODO: HIDE entry info and SEND the new entries array to server to WRITE CHANGES TO JSON
   //Refresh to draw the circles and timeline again
   deleteAllDotsAndTimeline();
   drawDotsAndTimeline();
   resetEntryView();
+  sendEntriesToServer();
+}
+
+function sendEntriesToServer() {
+  console.log("Updating JSON");
+  fetch('/', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        entriesArray: JSON.stringify(entriesArray)
+    })
+});
+
 }
 //parseEntries();
 var currentlyVisibleEntryID = -1;
