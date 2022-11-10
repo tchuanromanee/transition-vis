@@ -104,6 +104,8 @@ function resetEntryView() {
 
 function addNewEntry(){
   console.log("Add new entry");
+  $('#addNewEntryMenuModal').modal();
+  //Once option selected, close modal to open add screen $.modal.close();
 }
 
 function deleteAllDotsAndTimeline() {
