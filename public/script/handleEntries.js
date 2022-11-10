@@ -13,6 +13,7 @@ function serverget()
 var placeNewTextEntry = false;
 var placeNewBodyEntry = false;
 var placeNewImgEntry = false;
+var links = [];
 
 function parseEntries() {
   for (let i = 0; i < entriesArray.length; i++) {
@@ -70,8 +71,23 @@ function sendEntriesToServer() {
 //parseEntries();
 var currentlyVisibleEntryID = -1;
 
-function displayEntry() {
+function circleClick() {
   var idOfCircle = d3.select(this).attr('id').slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+  currentlyVisibleEntryID = idOfCircle;
+  if (!placeNewTextEntry && !placeNewBodyEntry && !placeNewImgEntry) {
+    displayEntry(idOfCircle);
+  }
+  else if (placeNewTextEntry) {
+    // LEFT OFF: Click on circle to fill
+    d3.select(this).attr("fill", "#000000");
+    links.push(idOfCircle);
+    console.log("Circle clicked in add mode!");
+    console.log(links);
+  }
+
+}
+
+function displayEntry(idOfCircle) {
   var thisEntry = getEntryByID(idOfCircle); //-1 for offsetting (ASSUMES THE ENTRY ID AND)
   console.log(thisEntry); // returns the circle that was clicked
   currentlyVisibleEntryID = idOfCircle;
@@ -149,17 +165,53 @@ function addTextOnlyEntry() {
   dateControl.value = today;
 }
 
-$(document).ready(function(){
-  $('#timelineSVG').click(timelineSvgClick);
+$(document).ready(function(event) {
+  // Grab the x and y coords of the click and let the functions do the offset calcs
+
+  $('#timelineSVG').click(function(event) {
+    var pageX = event.pageX;
+    var pageY = event.pageY;
+    timelineSvgClick(pageX,pageY)
+});
+  //$('#timelineSVG').click(timelineSvgClick);
 });
 
 
 
-function timelineSvgClick() { //this function will be the master for handling all svg clicks
+function timelineSvgClick(pageX, pageY) { //this function will be the master for handling all svg clicks
+
 
   // check for the mode to see if we're ready to place
+  if (placeNewTextEntry && $('.timelineCircle:hover').length != 0) {
+    // Not done placing it yet, so let's try again later when we click on SVG only
+    console.log("Circle AND SVG");
+    return;
+  }
+  else if (placeNewTextEntry) { // Awesome, place it!
+    // No matter if we've clicked on a circle yet, we're gonna read the Links
+    console.log("SVG but not circle");
+    // Reset all the clicked circles' colors by retrieving from links
 
-  console.log("Clicked on SVG");
+    //d3.select(this).attr("fill", "steelblue");
+
+
+    //calculate the timeline coordinates
+    var offsetX = $('#timelineSVG').offset().left;
+    var offsetY = $('#timelineSVG').offset().top;
+    var x = pageX - offsetX;
+    var y = pageY - offsetY;
+    console.log(x);
+    console.log(y);
+    // Write the Data
+    //writeNewTextEntry(x,y);
+  }
+
+  else {
+    console.log("SVG clicked but not doing anything bc not adding or editing");
+    return;
+  }
+
+
 }
 
 function processNewTextEntry() {
@@ -168,7 +220,8 @@ function processNewTextEntry() {
   placeNewTextEntry = true;
   document.body.style.cursor = 'crosshair';
   $.modal.close();
-}/*
+}
+function writeNewTextEntry(timelinePosX, timelinePosY) {
   console.log("Processing form...");
   //console.log($('#addTextEntryForm').serializeArray());
   //Data: form-date=2022-07-22&form-title=asd&form-caption=&color=%23e66465
@@ -183,7 +236,6 @@ function processNewTextEntry() {
   var newEntryID = findHighestEntryID() + 1;
   console.log(newEntryID);
 
-  // Get x and y coords of dot on TL
 
   // Add new entry to entriesarray
   var newEntryToAdd = {
@@ -195,8 +247,9 @@ function processNewTextEntry() {
     "BodyPositionX": 0,
     "BodyPositionY": 0,
     "TimelineID": 1,
-    "TimelinePositionX": 300,
-    "TimelinePositionY": 100,
+    "TimelinePositionX": timelinePosX,
+    "TimelinePositionY": timelinePosY,
+    "Links": links,
     "Title": newTitle,
     "Caption": newCaption,
     "ImgID": ""
@@ -218,9 +271,12 @@ function processNewTextEntry() {
   var placeNewBodyEntry = false;
   var placeNewImgEntry = false;
 
+
+  // TODO: Clear the links
+
   // TODO: Also reset circle variables
 
-}*/
+}
 
 function findHighestEntryID() {
   var highestID = -1;
@@ -283,7 +339,7 @@ function drawDotsAndTimeline() {
       .on("mouseout", function(d) {
           d3.select(this).style("fill", emotionColor);
       })
-      .on("mousedown", displayEntry); // TODO: Check if click and drag will change
+      .on("mousedown", circleClick); // TODO: Check if click and drag will change
   }
   // Draw the timeline
 
