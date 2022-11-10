@@ -102,10 +102,46 @@ function resetEntryView() {
 
 }
 
-function addNewEntry(){
-  console.log("Add new entry");
+function showNewEntryMenu(){
+
   $('#addNewEntryMenuModal').modal();
-  //Once option selected, close modal to open add screen $.modal.close();
+
+}
+
+function addBodyEntry() {
+  //Once option selected, close modal to open add screen
+  $.modal.close();
+
+  // Show modal form
+  $('#addNewBodyEntryModal').modal();
+
+  // Edit the date input so that it's today's dateSpan
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+
+  today = mm + '/' + dd + '/' + yyyy;
+  const dateControl = document.querySelector('input[type="date"]');
+  dateControl.value = today;
+}
+
+function addTextOnlyEntry() {
+  //Once option selected, close modal to open add screen
+  $.modal.close();
+
+  // Show modal form
+  $('#addNewTextEntryModal').modal();
+}
+
+function addImageEntry() {
+  //Once option selected, close modal to open add screen
+  $.modal.close();
+  console.log("Add new image entry");
+
+  // Show modal form
+  $('#addNewImageEntryModal').modal();
+
 }
 
 function deleteAllDotsAndTimeline() {

@@ -32,27 +32,71 @@
 </head>
 
 <body>
+  <!-- Modal HTML embedded directly into document -->
+  <div id="addNewEntryMenuModal" class="modal">
+    <h2>Add a new point</h2>
+    <p>Choose from one of three options.</p>
+    <button id="addBodyButton" class="btn btn-primary" onclick="addBodyEntry();">Body</button> <br />
+    <button id="addTextOnlyButton" class="btn btn-primary" onclick="addTextOnlyEntry();">Text Only</button> <br />
+    <button id="addImageButton" class="btn btn-primary" onclick="addImageEntry();">Image</button> <br />
 
+    <a href="#" rel="modal:close">Cancel</a>
+  </div>
+  <!-- Modal HTML embedded directly into document -->
+  <div id="addNewBodyEntryModal" class="modal">
+    <h2>Enter information</h2>
+    <form>
+      <div class="form-group">
+        <label for="formInputDate">Date of Entry</label>
+        <input type="date" id="formInputDate" name="form-date"
+       value="2022-07-22"
+       min="1920-01-01" max="2040-12-31">
+      </div>
+      <div class="form-group">
+        <label for="formInputTitle">Title for Entry</label>
+        <input type="text" class="form-control" id="formInputTitle" aria-describedby="titleHelp" placeholder="Enter title">
+        <small id="titleHelp" class="form-text text-muted">Something descriptive for your entry.</small>
+      </div>
+      <div class="form-group">
+        <label for="formInputCaption">Entry text</label>
+        <textarea class="form-control" id="formInputCaption" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="formInputColor">Color of your dot</label>
+        <input type="color" id="formInputColor" aria-describedby="colorHelp" name="color"
+           value="#e66465">
+           <small id="colorHelp" class="form-text text-muted">This color applies to both the dot on the body and on the timeline</small>
+
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    Placeholder to place new dot on the body button <br />
+    <a href="#" rel="modal:close">Cancel</a>
+  </div>
+  <!-- Modal HTML embedded directly into document -->
+  <div id="addNewTextEntryModal" class="modal">
+    <h2>Enter information</h2>
+
+    Placeholder to place new dot on the timeline button
+    <a href="#" rel="modal:close">Cancel</a>
+  </div>
+  <!-- Modal HTML embedded directly into document -->
+  <div id="addNewImageEntryModal" class="modal">
+    <h2>Enter information</h2>
+    Placeholder to place new dot on the timeline button
+    <a href="#" rel="modal:close">Cancel</a>
+  </div>
 			<div class = "container-fluid">
       <div class="row">
         <div class="col-sm-1" id="addDiv">
-          <button id="addEntryButton" class="btn btn-primary" onclick="addNewEntry();">+</button>
+          <button id="addEntryButton" class="btn btn-primary" onclick="showNewEntryMenu();">+</button>
         </div>
         <div class="col-sm-11" id="timelinediv">
         </div>
       </div>
         <div class= "row">
           <div class = "col-sm-4" id ="main">
-            <!-- Modal HTML embedded directly into document -->
-            <div id="addNewEntryMenuModal" class="modal">
-              <h2>Add a new point</h2>
-              <p>Choose from one of three options.</p>
-              <button id="addBodyButton" class="btn btn-primary" onclick="addBodyEntry();">Body</button> <br />
-              <button id="addTextOnlyButton" class="btn btn-primary" onclick="addTextOnlyEntry();">Text Only</button> <br />
-              <button id="addImageButton" class="btn btn-primary" onclick="addImageEntry();">Image</button> <br />
 
-              <a href="#" rel="modal:close">Cancel</a>
-            </div>
           </div>
           <div class ="col-sm-8" id="infoDiv">
             <span id = "dateLabel">&nbsp;</span> <span id = "dateSpan">&nbsp;</span><br />
