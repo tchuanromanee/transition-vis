@@ -10,6 +10,10 @@ function serverget()
    xmlhttp.send();
 }
 
+var placeNewTextEntry = false;
+var placeNewBodyEntry = false;
+var placeNewImgEntry = false;
+
 function parseEntries() {
   for (let i = 0; i < entriesArray.length; i++) {
     console.log(entriesArray[i].Title);
@@ -145,7 +149,26 @@ function addTextOnlyEntry() {
   dateControl.value = today;
 }
 
+$(document).ready(function(){
+  $('#timelineSVG').click(timelineSvgClick);
+});
+
+
+
+function timelineSvgClick() { //this function will be the master for handling all svg clicks
+
+  // check for the mode to see if we're ready to place
+
+  console.log("Clicked on SVG");
+}
+
 function processNewTextEntry() {
+  console.log("Processing new text entry...")
+  // Place the new dot
+  placeNewTextEntry = true;
+  document.body.style.cursor = 'crosshair';
+  $.modal.close();
+}/*
   console.log("Processing form...");
   //console.log($('#addTextEntryForm').serializeArray());
   //Data: form-date=2022-07-22&form-title=asd&form-caption=&color=%23e66465
@@ -163,7 +186,7 @@ function processNewTextEntry() {
   // Get x and y coords of dot on TL
 
   // Add new entry to entriesarray
-  const newEntryToAdd = {
+  var newEntryToAdd = {
     "entryID": newEntryID,
     "Type": "TextOnly",
     "Date": newDate,
@@ -185,13 +208,19 @@ function processNewTextEntry() {
   // Send the data to the server
 
   sendEntriesToServer();
-  $.modal.close();
 
 
   // Add the new dot in
   drawDotsAndTimeline();
 
-}
+  // Reset variables
+  var placeNewTextEntry = false;
+  var placeNewBodyEntry = false;
+  var placeNewImgEntry = false;
+
+  // TODO: Also reset circle variables
+
+}*/
 
 function findHighestEntryID() {
   var highestID = -1;
@@ -301,7 +330,7 @@ function drawBodyDots() {
 
 var svgTimelineContainer = d3.select("#timelinediv").append("svg")
   	.attr("width", 960)
-  	.attr("id", "#timelineSVG");
+  	.attr("id", "timelineSVG");
 
 
 drawBodyDots();

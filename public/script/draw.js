@@ -6,7 +6,6 @@ var svgContainer = d3.select("#main").append("svg")
   	.attr("id", "#mainSVG");
 
 
-
 //Bezier Curve: P1, P2, Pfinal
 var path = d3.path();
 path.moveTo(200,120);
