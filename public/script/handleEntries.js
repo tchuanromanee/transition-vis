@@ -132,6 +132,76 @@ function addTextOnlyEntry() {
 
   // Show modal form
   $('#addNewTextEntryModal').modal();
+
+
+  // Edit the date input so that it's today's dateSpan
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+
+  today = mm + '/' + dd + '/' + yyyy;
+  const dateControl = document.querySelector('input[type="date"]');
+  dateControl.value = today;
+}
+
+function processNewTextEntry() {
+  console.log("Processing form...");
+  //console.log($('#addTextEntryForm').serializeArray());
+  //Data: form-date=2022-07-22&form-title=asd&form-caption=&color=%23e66465
+  var formData = $('#addTextEntryForm').serializeArray();
+
+  var newDate = formData[0].value;
+  var newTitle = formData[1].value;
+  var newCaption = formData[2].value;
+  var newColor = formData[3].value;
+
+  // Generate an Entry ID (highest + 1)
+  var newEntryID = findHighestEntryID() + 1;
+  console.log(newEntryID);
+
+  // Get x and y coords of dot on TL
+
+  // Add new entry to entriesarray
+  const newEntryToAdd = {
+    "entryID": newEntryID,
+    "Type": "TextOnly",
+    "Date": newDate,
+    "EmotionScale": 5,
+    "EmotionColor": newColor,
+    "BodyPositionX": 0,
+    "BodyPositionY": 0,
+    "TimelineID": 1,
+    "TimelinePositionX": 300,
+    "TimelinePositionY": 100,
+    "Title": newTitle,
+    "Caption": newCaption,
+    "ImgID": ""
+  };
+
+
+  entriesArray.push(newEntryToAdd);
+
+  // Send the data to the server
+
+  sendEntriesToServer();
+  $.modal.close();
+
+
+  // Add the new dot in
+  drawDotsAndTimeline();
+
+}
+
+function findHighestEntryID() {
+  var highestID = -1;
+  for (let i = 0; i < entriesArray.length; i++) {
+    var currID = entriesArray[i].entryID;
+    if (currID > highestID) {
+      highestID = currID;
+    }
+  }
+  return highestID;
 }
 
 function addImageEntry() {
@@ -141,6 +211,15 @@ function addImageEntry() {
 
   // Show modal form
   $('#addNewImageEntryModal').modal();
+  // Edit the date input so that it's today's dateSpan
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+
+  today = mm + '/' + dd + '/' + yyyy;
+  const dateControl = document.querySelector('input[type="date"]');
+  dateControl.value = today;
 
 }
 

@@ -12,6 +12,13 @@ app.use(express.static(__dirname + '/public'));
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
+//Bypass CORS and network errors
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // use res.render to load up an ejs view file
 
 var entriesArray;
