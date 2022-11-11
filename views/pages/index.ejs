@@ -44,7 +44,7 @@
   </div>
   <!-- Modal HTML embedded directly into document -->
   <div id="addNewBodyEntryModal" class="modal">
-    <h2>Enter information</h2>
+    <h2>New Body Entry</h2>
     <form id = "addBodyEntryForm">
       <div class="form-group">
         <label for="formInputDate">Date of Entry</label>
@@ -68,14 +68,14 @@
            <small id="colorHelp" class="form-text text-muted">This color applies to the dot for both body and timeline</small>
 
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    <button type="submit" class="btn btn-primary" onclick="processNewBodyEntry();>Submit</button>
     Placeholder to place new dot on the body button <br />
     <a href="#" rel="modal:close">Cancel</a>
   </div>
   <!-- Modal HTML embedded directly into document -->
   <div id="addNewTextEntryModal" class="modal">
-    <h2>Enter information</h2>
+    <h2>New Text-Only Entry</h2>
     <form id ="addTextEntryForm">
       <div class="form-group">
         <label for="formInputDate">Date of Entry</label>
@@ -101,8 +101,6 @@
       </div>
       </form>
       <button type="submit" class="btn btn-primary" onclick="processNewTextEntry();">Submit</button>
-
-    Placeholder to place new dot on the body button <br />
     <a href="#" rel="modal:close">Cancel</a>
   </div>
   <!-- Modal HTML embedded directly into document -->

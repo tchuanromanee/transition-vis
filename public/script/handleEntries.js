@@ -78,12 +78,22 @@ function circleClick() {
   if (!placeNewTextEntry && !placeNewBodyEntry && !placeNewImgEntry) {
     displayEntry(idOfCircle);
   }
-  else if (placeNewTextEntry) {
-    // Click on circle and draw stroke to indicate it has been selected
-    d3.select(this).attr("stroke", "#000000");
-    links.push(idOfCircle);
-    console.log("Circle clicked in add mode!");
-    console.log(links);
+  else if (placeNewTextEntry) { // TODO: Add logic for placeNewImgEntry, maybe placeNewBodyEntry
+    // If circle has already been clicked, undo it and remove from links
+    indexOfCircleinLinks = links.indexOf(idOfCircle);
+    if (indexOfCircleinLinks > -1) {
+      links.splice(indexOfCircleinLinks, 1); // 2nd parameter means remove one item only
+      console.log("Circle removed from links!");
+      d3.select(this).attr("stroke", "#ffffff");
+    }
+    else {
+
+      // Click on circle and draw stroke to indicate it has been selected
+      d3.select(this).attr("stroke", "#000000");
+      links.push(idOfCircle);
+      console.log("Circle clicked in add mode!");
+      console.log(links);
+    }
   }
 
 }
@@ -167,13 +177,22 @@ function addTextOnlyEntry() {
 }
 
 $(document).ready(function(event) {
-  // Grab the x and y coords of the click and let the functions do the offset calcs
+
 
   $('#timelineSVG').click(function(event) {
+    // Grab the x and y coords of the click and let the functions do the offset calcs
     var pageX = event.pageX;
     var pageY = event.pageY;
     timelineSvgClick(pageX,pageY)
-});
+  });
+
+  // Prevent people from pressing enter to submit form, which results in a networkerror
+  $(window).keydown(function(event){
+    if(event.keyCode == 13) {
+      event.preventDefault();
+      return false;
+    }
+  });
   //$('#timelineSVG').click(timelineSvgClick);
 });
 
@@ -183,7 +202,7 @@ function timelineSvgClick(pageX, pageY) { //this function will be the master for
 
 
   // check for the mode to see if we're ready to place
-  if (placeNewTextEntry && $('.timelineCircle:hover').length != 0) {
+  if ($('.timelineCircle:hover').length != 0) {
     // Not done placing it yet, so let's try again later when we click on SVG only
     console.log("Circle AND SVG");
     return;
@@ -228,8 +247,18 @@ function timelineSvgClick(pageX, pageY) { //this function will be the master for
 
 }
 
+function processNewBodyEntry() {
+  console.log("Processing new body entry...")
+  placeNewBodyEntry = true;
+
+  // TODO: Add guidance for placement
+
+  document.body.style.cursor = 'crosshair';
+  $.modal.close();
+
+}
+
 function processNewTextEntry() {
-  console.log("Processing new text entry...")
   // Place the new dot
   placeNewTextEntry = true;
 
