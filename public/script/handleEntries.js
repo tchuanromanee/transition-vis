@@ -254,6 +254,13 @@ function writeNewTextEntry(timelinePosX, timelinePosY) {
   var newEntryID = findHighestEntryID() + 1;
   console.log(newEntryID);
 
+  // Need to convert links to int in order to write in correct format to JSON
+  var linksAsInt = []
+
+  for (var i = 0; i < links.length; i++) {
+    linksAsInt.push(parseInt(links[i]));
+  }
+
 
   // Add new entry to entriesarray
   var newEntryToAdd = {
@@ -267,7 +274,7 @@ function writeNewTextEntry(timelinePosX, timelinePosY) {
     "TimelineID": 1,
     "TimelinePositionX": timelinePosX,
     "TimelinePositionY": timelinePosY,
-    "Links": links,
+    "Links": linksAsInt,
     "Title": newTitle,
     "Caption": newCaption,
     "ImgID": ""
@@ -285,14 +292,14 @@ function writeNewTextEntry(timelinePosX, timelinePosY) {
   drawDotsAndTimeline();
 
   // Reset variables
-  var placeNewTextEntry = false;
-  var placeNewBodyEntry = false;
-  var placeNewImgEntry = false;
+  placeNewTextEntry = false;
+  placeNewBodyEntry = false;
+  placeNewImgEntry = false;
 
 
-  // TODO: Clear the links
+  // Clear the links
+  links = [];
 
-  // TODO: Also reset circle variables
 
 }
 
