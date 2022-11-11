@@ -13,7 +13,8 @@ function serverget()
 var placeNewTextEntry = false;
 var placeNewBodyEntry = false;
 var placeNewImgEntry = false;
-var links = [];
+var links = []; // for new links to be added
+var allLinks = []; // for all links in the timeline graph
 
 function parseEntries() {
   for (let i = 0; i < entriesArray.length; i++) {
@@ -46,6 +47,7 @@ function deleteVisibleEntry() {
 
   var indexToDelete = getEntryIndexByID(currentlyVisibleEntryID);
   entriesArray.splice(indexToDelete, 1);
+  // TODO: Find and destroy links to any other array elements
   console.log(entriesArray);
 
   //Refresh to draw the circles and timeline again
@@ -118,6 +120,17 @@ function displayEntry(idOfCircle) {
   }
 }
 
+function displayGuidance() {
+  // Show the entry attributes
+  $("#guidanceText").text("Click on any dot(s) to create a link to your new entry. Once you're done clicking on all the dots you want, click anywhere on the canvas to place the new dot. Right click to cancel.");
+}
+
+function hideGuidance() {
+  // Show the entry attributes
+  $("#guidanceText").text("");
+}
+
+
 function resetEntryView() {
   $("#dateLabel").text("");
   $("#dateSpan").text("");
@@ -142,7 +155,7 @@ function showNewEntryMenu(){
 function addBodyEntry() {
   //Once option selected, close modal to open add screen
   $.modal.close();
-
+  resetEntryView();
   // Show modal form
   $('#addNewBodyEntryModal').modal();
 
@@ -160,7 +173,7 @@ function addBodyEntry() {
 function addTextOnlyEntry() {
   //Once option selected, close modal to open add screen
   $.modal.close();
-
+  resetEntryView();
   // Show modal form
   $('#addNewTextEntryModal').modal();
 
@@ -196,6 +209,7 @@ $(document).ready(function(event) {
           placeNewTextEntry = false;
           placeNewBodyEntry = false;
           document.body.style.cursor = 'default';
+          hideGuidance();
 
         } else {
           return false;
@@ -260,6 +274,9 @@ function timelineSvgClick(pageX, pageY) { //this function will be the master for
     // Reset cursor
     document.body.style.cursor = 'default';
 
+    // Hide the guidance
+    hideGuidance();
+
     // Write the Data
     writeNewTextEntry(x,y);
   }
@@ -276,7 +293,8 @@ function processNewBodyEntry() {
   console.log("Processing new body entry...")
   placeNewBodyEntry = true;
 
-  // TODO: Add guidance for placement
+  // Add guidance for placement
+  displayGuidance();
 
   document.body.style.cursor = 'crosshair';
   $.modal.close();
@@ -287,7 +305,8 @@ function processNewTextEntry() {
   // Place the new dot
   placeNewTextEntry = true;
 
-  // TODO: Add guidance for placement
+  // Add guidance for placement
+  displayGuidance();
 
 
   // Make the cursor a crosshair for add mode
@@ -396,14 +415,47 @@ function deleteAllDotsAndTimeline() {
 
 }
 
+function getCoords(entryIDtoFind) {
+
+  var coordsToReturn = []; //(x, y)
+  for (let i = 0; i < entriesArray.length; i++) {
+    if (entriesArray[i].entryID == entryIDtoFind) {
+      var xCoord = entriesArray[i].TimelinePositionX;
+      var yCoord = entriesArray[i].TimelinePositionY;
+      coordsToReturn = [xCoord, yCoord];
+      return coordsToReturn;
+    }
+  }
+  return coordsToReturn;
+
+}
+
 function drawDotsAndTimeline() {
   var timelinePoints = [];
-  // For each entry, draw the dot on the timeline
+  // For each entry, draw the dot on the timeline and populate links
+  var timelineCoords = [];
   for (let i = 0; i < entriesArray.length; i++) {
     // Read the x and y coordinates of the timeline
+    var thisEntryID = entriesArray[i].entryID;
     var xPos = entriesArray[i].TimelinePositionX;
     var yPos = entriesArray[i].TimelinePositionY;
     var emotionColor = entriesArray[i].EmotionColor;
+
+    // Grab the links and populate
+    var theseLinks = entriesArray[i].Links;
+    var otherEntryCoords = [];
+    for (let j = 0; j < theseLinks.length; j++) {
+      var oneLink = [thisEntryID, theseLinks[j]];
+      otherEntryCoords = getCoords(theseLinks[j])
+      allLinks.push(oneLink);
+      // Push x and y coords for timeline if reading for this particular ID
+      var xPosOther = otherEntryCoords[0];
+      var yPosOther = otherEntryCoords[1];
+      let newLink = {x1: xPos, y1: yPos, x2: xPosOther, y2: yPosOther};
+      timelineCoords.push(newLink);
+    }
+
+
     timelinePoints.push([xPos, yPos]);
     var circleID = "circle" + entriesArray[i].entryID;
     svgTimelineContainer.append('circle')
@@ -426,8 +478,41 @@ function drawDotsAndTimeline() {
   // Draw the timeline
 
   var timeline = d3.line();
-  // Eventually, we will populate the timelinepoints with data taken from the entries
 
+  console.log(timelineCoords);
+  // Draw the links
+  for (let i = 0; i < timelineCoords.length; i++) {
+    var newLine = svgTimelineContainer.append("line")
+    .attr("x1",timelineCoords[i].x1)
+    .attr("y1", timelineCoords[i].y1)
+    .attr('x2', timelineCoords[i].x2)
+    .attr("y2", timelineCoords[i].y2)
+    .attr("stroke-width", 2)
+    .attr("stroke", "black");
+  }
+
+
+/*
+
+  var line = d3.line()
+    .x(function(d) { return x(d.x); })
+    .y(function(d) { return y(d.y); })
+    .curve(d3.curveBasis);
+
+
+
+  svgTimelineContainer.selectAll(".line")
+    .data(timelineCoords)
+    .enter().append("path")
+    .attr("class", "line")
+    .attr("stroke-width", 3)
+    .attr("d", line);
+    */
+
+    //BELOW: OLD
+
+  // Grab the links and populate
+/*
   var timelinePath = timeline(timelinePoints);
 
   svgTimelineContainer.append("path")
@@ -436,7 +521,8 @@ function drawDotsAndTimeline() {
       .attr("fill", "none")
       .attr('class', "timeline")
       .attr('id', "timeline")
-      .attr("Stroke-width", "2");
+      .attr("stroke-width", "2");
+      */
 }
 
 

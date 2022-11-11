@@ -33,6 +33,7 @@ const newEntry = {
   "TimelineID": 1,
   "TimelinePositionX": 100,
   "TimelinePositionY": 75,
+  "Links": [1],
   "Title": "Top Surgery Consult",
   "Caption": "Got a consult with Dr. Y. He seemed nice and was able to answer my questions.",
   "ImgID": ""
