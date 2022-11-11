@@ -177,13 +177,38 @@ function addTextOnlyEntry() {
 }
 
 $(document).ready(function(event) {
+  document.oncontextmenu = function() {return false;};
 
-
-  $('#timelineSVG').click(function(event) {
+  /*$('#timelineSVG').click(function(event) {
     // Grab the x and y coords of the click and let the functions do the offset calcs
     var pageX = event.pageX;
     var pageY = event.pageY;
     timelineSvgClick(pageX,pageY)
+  });*/
+
+  $('#timelineSVG').mousedown(function(event) { // right click to cancel add mode
+    if( event.button == 2 ) {  // Right mouse button clicked!
+      if (placeNewImgEntry || placeNewTextEntry || placeNewBodyEntry) { // Right clicked in PLACE mode
+        if (confirm('Cancel adding a new entry?')) {
+          // Reset variables
+          links = [];
+          placeNewImgEntry = false;
+          placeNewTextEntry = false;
+          placeNewBodyEntry = false;
+          document.body.style.cursor = 'default';
+
+        } else {
+          return false;
+        }
+      }
+      return false;
+    }
+    var pageX = event.pageX;
+    var pageY = event.pageY;
+    timelineSvgClick(pageX,pageY)
+    return true;
+
+
   });
 
   // Prevent people from pressing enter to submit form, which results in a networkerror
@@ -263,6 +288,7 @@ function processNewTextEntry() {
   placeNewTextEntry = true;
 
   // TODO: Add guidance for placement
+
 
   // Make the cursor a crosshair for add mode
   document.body.style.cursor = 'crosshair';
@@ -389,9 +415,11 @@ function drawDotsAndTimeline() {
       .style('fill', emotionColor)
       .on("mouseover", function(d) {
           d3.select(this).style("fill", "#fff8ee");
+          // TODO: Show a tiny tooltip with basic info on the entry
       })
       .on("mouseout", function(d) {
           d3.select(this).style("fill", emotionColor);
+          // TODO: Remove tiny tooltip with basic info on the entry
       })
       .on("mousedown", circleClick); // TODO: Check if click and drag will change
   }
