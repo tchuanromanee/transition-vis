@@ -72,14 +72,15 @@ function sendEntriesToServer() {
 var currentlyVisibleEntryID = -1;
 
 function circleClick() {
-  var idOfCircle = d3.select(this).attr('id').slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+  var fullCircleID = d3.select(this).attr('id');
+  var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
   currentlyVisibleEntryID = idOfCircle;
   if (!placeNewTextEntry && !placeNewBodyEntry && !placeNewImgEntry) {
     displayEntry(idOfCircle);
   }
   else if (placeNewTextEntry) {
-    // LEFT OFF: Click on circle to fill
-    d3.select(this).attr("fill", "#000000");
+    // Click on circle and draw stroke to indicate it has been selected
+    d3.select(this).attr("stroke", "#000000");
     links.push(idOfCircle);
     console.log("Circle clicked in add mode!");
     console.log(links);
@@ -190,10 +191,19 @@ function timelineSvgClick(pageX, pageY) { //this function will be the master for
   else if (placeNewTextEntry) { // Awesome, place it!
     // No matter if we've clicked on a circle yet, we're gonna read the Links
     console.log("SVG but not circle");
+    // Ask if user wants to place
+    if (confirm('Place the new dot here?')) {
+      console.log("Place the new dot here and continue.");
+    } else {
+      return;
+    }
+
     // Reset all the clicked circles' colors by retrieving from links
+    for (let i = 0; i < links.length; i++) {
+      var idOfSelectedCircle = "#circle" + links[i];
+      d3.select(idOfSelectedCircle).attr("stroke", "#ffffff");
 
-    //d3.select(this).attr("fill", "steelblue");
-
+    }
 
     //calculate the timeline coordinates
     var offsetX = $('#timelineSVG').offset().left;
@@ -202,8 +212,12 @@ function timelineSvgClick(pageX, pageY) { //this function will be the master for
     var y = pageY - offsetY;
     console.log(x);
     console.log(y);
+
+    // Reset cursor
+    document.body.style.cursor = 'default';
+
     // Write the Data
-    //writeNewTextEntry(x,y);
+    writeNewTextEntry(x,y);
   }
 
   else {
@@ -218,6 +232,10 @@ function processNewTextEntry() {
   console.log("Processing new text entry...")
   // Place the new dot
   placeNewTextEntry = true;
+
+  // TODO: Add guidance for placement
+
+  // Make the cursor a crosshair for add mode
   document.body.style.cursor = 'crosshair';
   $.modal.close();
 }
