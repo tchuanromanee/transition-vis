@@ -146,7 +146,7 @@ function circleClick() {
   if (!placeNewTextEntry && !placeNewBodyEntry && !placeNewImgEntry) {
     displayEntry(idOfCircle);
   }
-  else if (placeNewTextEntry) { // TODO: Add logic for placeNewImgEntry, maybe placeNewBodyEntry
+  else if (placeNewTextEntry || (placeNewBodyEntry && bodyDotPlaced) || placeNewImgEntry) {
     // If circle has already been clicked, undo it and remove from links
     indexOfCircleinLinks = links.indexOf(idOfCircle);
     if (indexOfCircleinLinks > -1) {
