@@ -46,15 +46,77 @@ function deleteVisibleEntry() {
   }
 
   var indexToDelete = getEntryIndexByID(currentlyVisibleEntryID);
+  // Re-connect links so that deleting does not sever the nodes timeline
+
+  // Search for links with currentlyVisibleEntryID
+  var linkedNodes = [];
+  var newAllLinksWithoutOverwrite = []; // ALL links without any reference to node to be deleted
+  for (var i = 0; i < allLinks.length; i++) {
+    if (allLinks[i][0] == currentlyVisibleEntryID) {
+      // Once found, push all links to a separate array
+      if (!linkedNodes.includes(allLinks[i][1])) { // these if statements prevent duplicates
+        linkedNodes.push(allLinks[i][1]);
+      }
+
+    }
+    else if (allLinks[i][1] == currentlyVisibleEntryID) {
+      if (!linkedNodes.includes(allLinks[i][0])) {
+        linkedNodes.push(allLinks[i][0]);
+      }
+    }
+    else {
+      newAllLinksWithoutOverwrite.push(allLinks[i]);
+    }
+  }
+
+  console.log("Found matches for node:");
+  console.log(currentlyVisibleEntryID);
+  console.log(linkedNodes);
+  // generate new links
+  var newLinksGenerated = [];
+  for (var i = 0; i < linkedNodes.length-1; i++) {
+    var newLink = [linkedNodes[i], linkedNodes[i+1]];
+    newLinksGenerated.push(newLink);
+  }
+
+  console.log("New Links Generated!:");
+  console.log(newLinksGenerated);
+
+  // Link array in order: rewrite allLinks and commit to entriesArray
+  // APPEND newAllLinksWithoutOverwrite with new links to write
+  allLinks = newAllLinksWithoutOverwrite.concat(newLinksGenerated);
+
+  console.log("Brand New AllLinks:");
+  console.log(allLinks);
+
+
+
   entriesArray.splice(indexToDelete, 1);
-  // TODO: Find and destroy links to any other array elements
+
+  updateEntryLinks();
+
+  console.log("Updated entriesArray:");
   console.log(entriesArray);
+
 
   //Refresh to draw the circles and timeline again
   deleteAllDotsAndTimeline();
   drawDotsAndTimeline();
   resetEntryView();
   sendEntriesToServer();
+}
+
+function updateEntryLinks() {
+  // grab from AllLinks
+  for (var i = 0; i < allLinks.length; i++) {
+    var thisEntryID = allLinks[i][0];
+    var entryToLinkID = allLinks[i][1];
+    var thisEntryIndex = getEntryIndexByID(thisEntryID);
+    entriesArray[thisEntryIndex].Links = []; // Clear links first
+    if (!entriesArray[thisEntryIndex].Links.includes(entryToLinkID)) {
+      entriesArray[thisEntryIndex].Links.push(entryToLinkID);
+    }
+  }
 }
 
 function sendEntriesToServer() {
@@ -447,7 +509,10 @@ function drawDotsAndTimeline() {
     for (let j = 0; j < theseLinks.length; j++) {
       var oneLink = [thisEntryID, theseLinks[j]];
       otherEntryCoords = getCoords(theseLinks[j])
+      //if (!allLinks.includes(oneLink)) {
       allLinks.push(oneLink);
+      //}
+
       // Push x and y coords for timeline if reading for this particular ID
       var xPosOther = otherEntryCoords[0];
       var yPosOther = otherEntryCoords[1];
@@ -487,6 +552,7 @@ function drawDotsAndTimeline() {
     .attr("y1", timelineCoords[i].y1)
     .attr('x2', timelineCoords[i].x2)
     .attr("y2", timelineCoords[i].y2)
+    .attr('class', "timeline")
     .attr("stroke-width", 2)
     .attr("stroke", "black");
   }
