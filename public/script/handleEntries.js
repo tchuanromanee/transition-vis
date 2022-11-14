@@ -195,6 +195,12 @@ function displayGuidance() {
   $("#guidanceText").text("Click on any dot(s) to create a link to your new entry. Once you're done clicking on all the dots you want, click anywhere on the canvas to place the new dot. Right click to cancel.");
 }
 
+function displayBodyGuidance() {
+  // Show the entry attributes
+  $("#guidanceText").text("Click on the point on the body where you want to add the new dot. Then, click on any dot(s) to create a link to your new entry. Once you're done clicking on all the dots you want, click anywhere on the canvas to place the new dot. Right click to cancel.");
+}
+
+
 function hideGuidance() {
   // Show the entry attributes
   $("#guidanceText").text("");
@@ -426,7 +432,7 @@ function processNewBodyEntry() {
   placeNewBodyEntry = true;
 
   // Add guidance for placement
-  displayGuidance();
+  displayBodyGuidance();
 
   document.body.style.cursor = 'crosshair';
   $.modal.close();
