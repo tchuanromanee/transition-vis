@@ -3,7 +3,7 @@
 var svgContainer = d3.select("#main").append("svg")
   	.attr("width", 560)
   	.attr("height", 460)
-  	.attr("id", "#mainSVG");
+  	.attr("id", "bodySVG");
 
 
 //Bezier Curve: P1, P2, Pfinal

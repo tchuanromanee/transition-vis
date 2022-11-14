@@ -13,8 +13,11 @@ function serverget()
 var placeNewTextEntry = false;
 var placeNewBodyEntry = false;
 var placeNewImgEntry = false;
+var bodyDotPlaced = false;
 var links = []; // for new links to be added
 var allLinks = []; // for all links in the timeline graph
+var bodyPosX = -1;
+var bodyPosY = -1;
 
 function parseEntries() {
   for (let i = 0; i < entriesArray.length; i++) {
@@ -102,6 +105,7 @@ function deleteVisibleEntry() {
   //Refresh to draw the circles and timeline again
   deleteAllDotsAndTimeline();
   drawDotsAndTimeline();
+  drawBodyDots();
   resetEntryView();
   sendEntriesToServer();
 }
@@ -175,11 +179,15 @@ function displayEntry(idOfCircle) {
   // Show the buttons
   $("#editEntryButton").show();
   $("#deleteEntryButton").show();
+  // Hide all dots on body by default
+  $('.bodyCircle').hide();
 
-  if (entriesArray[0].Type == "Body") {
-    // Show the first dot
-    document.getElementById("test1").style.display = "block";
+  if (thisEntry.Type == "Body") {
+    // Show the dot if a body entry is selected
+    var bodyDotID = "#bodyDot" + thisEntry.entryID;
+    $(bodyDotID).show();// = "block";
   }
+
 }
 
 function displayGuidance() {
@@ -287,6 +295,33 @@ $(document).ready(function(event) {
 
   });
 
+  $('#bodySVG').mousedown(function(event) { // right click to cancel add mode
+    if( event.button == 2 ) {  // Right mouse button clicked!
+      if (placeNewBodyEntry) { // Right clicked in PLACE mode
+        if (confirm('Cancel adding a new entry?')) {
+          // Reset variables
+          links = [];
+          placeNewImgEntry = false;
+          placeNewTextEntry = false;
+          placeNewBodyEntry = false;
+          document.body.style.cursor = 'default';
+          hideGuidance();
+
+        } else {
+          return false;
+        }
+      }
+      return false;
+    }
+    console.log("Event handler for SVG Body clicked");
+    var pageX = event.pageX;
+    var pageY = event.pageY;
+    bodySvgClick(pageX,pageY);
+    return true;
+
+
+  });
+
   // Prevent people from pressing enter to submit form, which results in a networkerror
   $(window).keydown(function(event){
     if(event.keyCode == 13) {
@@ -299,7 +334,7 @@ $(document).ready(function(event) {
 
 
 
-function timelineSvgClick(pageX, pageY) { //this function will be the master for handling all svg clicks
+function timelineSvgClick(pageX, pageY) { //this function will be the master for handling all svg clicks on the timeline
 
 
   // check for the mode to see if we're ready to place
@@ -308,7 +343,7 @@ function timelineSvgClick(pageX, pageY) { //this function will be the master for
     console.log("Circle AND SVG");
     return;
   }
-  else if (placeNewTextEntry) { // Awesome, place it!
+  else if (placeNewTextEntry || placeNewImgEntry || (placeNewBodyEntry && bodyDotPlaced)) { // Awesome, place it!
     // No matter if we've clicked on a circle yet, we're gonna read the Links
     console.log("SVG but not circle");
     // Ask if user wants to place
@@ -339,8 +374,43 @@ function timelineSvgClick(pageX, pageY) { //this function will be the master for
     // Hide the guidance
     hideGuidance();
 
-    // Write the Data
-    writeNewTextEntry(x,y);
+   // Write the Data depending on the type of entry
+    if (placeNewTextEntry) {
+      writeNewTextEntry(x,y);
+    }
+    else if (placeNewBodyEntry && bodyDotPlaced) {
+      writeNewBodyEntry(x,y);
+    }
+
+  }
+
+  else {
+    console.log("SVG clicked but not doing anything bc not adding or editing");
+    return;
+  }
+
+
+}
+
+
+function bodySvgClick(pageX, pageY) { //this function will be the master for handling all svg clicks on the body
+
+  // check for the mode to see if we're ready to place
+  if (placeNewBodyEntry && !bodyDotPlaced) { // Awesome, place it!
+    // Ask if user wants to place
+    if (confirm('Place the new dot here?')) {
+      console.log("Place the new dot here and continue.");
+    } else {
+      return;
+    }
+    bodyDotPlaced = true;
+
+    //calculate the timeline coordinates
+    var offsetX = $('#bodySVG').offset().left;
+    var offsetY = $('#bodySVG').offset().top;
+    bodyPosX = pageX - offsetX;
+    bodyPosY = pageY - offsetY;
+
   }
 
   else {
@@ -430,6 +500,7 @@ function writeNewTextEntry(timelinePosX, timelinePosY) {
   // Reset variables
   placeNewTextEntry = false;
   placeNewBodyEntry = false;
+  bodyDotPlaced = false;
   placeNewImgEntry = false;
 
 
@@ -437,6 +508,75 @@ function writeNewTextEntry(timelinePosX, timelinePosY) {
   links = [];
 
 
+}
+
+
+function writeNewBodyEntry(timelinePosX, timelinePosY) {
+  console.log("Processing body form...");
+  //console.log($('#addTextEntryForm').serializeArray());
+  //Data: form-date=2022-07-22&form-title=asd&form-caption=&color=%23e66465
+  var formData = $('#addBodyEntryForm').serializeArray();
+
+  var newDate = formData[0].value;
+  var newTitle = formData[1].value;
+  var newCaption = formData[2].value;
+  var newColor = formData[3].value;
+
+  // Generate an Entry ID (highest + 1)
+  var newEntryID = findHighestEntryID() + 1;
+  console.log(newEntryID);
+
+  // Need to convert links to int in order to write in correct format to JSON
+  var linksAsInt = []
+
+  for (var i = 0; i < links.length; i++) {
+    linksAsInt.push(parseInt(links[i]));
+  }
+
+
+  // Add new entry to entriesarray
+  var newEntryToAdd = {
+    "entryID": newEntryID,
+    "Type": "Body",
+    "Date": newDate,
+    "EmotionScale": 5,
+    "EmotionColor": newColor,
+    "BodyPositionX": bodyPosX,
+    "BodyPositionY": bodyPosY,
+    "TimelineID": 1,
+    "TimelinePositionX": timelinePosX,
+    "TimelinePositionY": timelinePosY,
+    "Links": linksAsInt,
+    "Title": newTitle,
+    "Caption": newCaption,
+    "ImgID": ""
+  };
+
+
+  entriesArray.push(newEntryToAdd);
+
+  // Send the data to the server
+
+  sendEntriesToServer();
+
+
+  // Add the new dot in
+  drawDotsAndTimeline();
+
+  // Also add new body dot in
+  drawBodyDots();
+
+  // Reset variables
+  placeNewTextEntry = false;
+  placeNewBodyEntry = false;
+  bodyDotPlaced = false;
+  placeNewImgEntry = false;
+  bodyPosX = -1;
+  bodyPosY = -1;
+
+
+  // Clear the links
+  links = [];
 }
 
 function findHighestEntryID() {
@@ -557,38 +697,6 @@ function drawDotsAndTimeline() {
     .attr("stroke", "black");
   }
 
-
-/*
-
-  var line = d3.line()
-    .x(function(d) { return x(d.x); })
-    .y(function(d) { return y(d.y); })
-    .curve(d3.curveBasis);
-
-
-
-  svgTimelineContainer.selectAll(".line")
-    .data(timelineCoords)
-    .enter().append("path")
-    .attr("class", "line")
-    .attr("stroke-width", 3)
-    .attr("d", line);
-    */
-
-    //BELOW: OLD
-
-  // Grab the links and populate
-/*
-  var timelinePath = timeline(timelinePoints);
-
-  svgTimelineContainer.append("path")
-      .attr("d", timelinePath)
-      .attr("stroke", "black")
-      .attr("fill", "none")
-      .attr('class', "timeline")
-      .attr('id', "timeline")
-      .attr("stroke-width", "2");
-      */
 }
 
 
@@ -596,25 +704,24 @@ function drawBodyDots() {
   var bodyPoints = [];
   // For each entry, draw the dot on the timeline
   for (let i = 0; i < entriesArray.length; i++) {
-    // Read the x and y coordinates of the timeline
-    var xPos = entriesArray[i].BodyPositionX;
-    var yPos = entriesArray[i].BodyPositionY;
-    var emotionColor = entriesArray[i].EmotionColor;
-    bodyPoints.push([xPos, yPos]);
-    var stringID = "test" + i;
-    svgContainer.append('circle')
-      .attr('cx', xPos)
-      .attr('cy', yPos)
-      .attr('r', 8)
-      .attr('id', stringID)
-      .attr('class', "bodyCircle")
-      .style('fill', emotionColor)
-      .style('display', 'none');
-  }
-  if (entriesArray[0].Type == "Body") {
-    // Show the first dot
-    document.getElementById("test1").style.display = "block";
-
+    if (entriesArray[i].Type == "Body") {
+      // Read the x and y coordinates of the timeline
+      var xPos = entriesArray[i].BodyPositionX;
+      var yPos = entriesArray[i].BodyPositionY;
+      var emotionColor = entriesArray[i].EmotionColor;
+      bodyPoints.push([xPos, yPos]);
+      var stringID = "bodyDot" + entriesArray[i].entryID;
+      console.log("Body Dot id is");
+      console.log(stringID);
+      svgContainer.append('circle')
+        .attr('cx', xPos)
+        .attr('cy', yPos)
+        .attr('r', 8)
+        .attr('id', stringID)
+        .attr('class', "bodyCircle")
+        .style('fill', emotionColor)
+        .style('display', 'none');
+    }
   }
 }
 
