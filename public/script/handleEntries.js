@@ -617,7 +617,7 @@ function writeNewImageEntry(timelinePosX, timelinePosY) {
 
   // Send the data to the server
 
-  //sendEntriesToServer(); // Send the rest of the entries to the server
+  sendEntriesToServer(); // Send the rest of the entries to the server
 
 
   // Add the new dot in
