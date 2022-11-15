@@ -134,10 +134,16 @@ function sendEntriesToServer() {
 var currentlyVisibleEntryID = -1;
 
 function circleClick() {
+  // Clear previously selected circle
+  $('.timelineCircle').attr("stroke", "none");
+
   var fullCircleID = d3.select(this).attr('id');
   var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
   currentlyVisibleEntryID = idOfCircle;
   if (!placeNewTextEntry && !placeNewBodyEntry && !placeNewImgEntry) {
+    // Click on circle and draw stroke to indicate it has been selected
+    d3.select(this).attr("stroke", "#000000");
+    //console.log(links);
     displayEntry(idOfCircle);
   }
   else if (placeNewTextEntry || (placeNewBodyEntry && bodyDotPlaced) || placeNewImgEntry) {
@@ -158,6 +164,10 @@ function circleClick() {
     }
   }
 
+}
+
+function editEntry() {
+  //currentlyVisibleEntryID
 }
 
 function displayEntry(idOfCircle) {
