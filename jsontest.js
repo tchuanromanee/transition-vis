@@ -5,12 +5,14 @@ var url = require('url');
 var http = require("http");
 const fs = require('fs');
 var app = express();
+var path = require('path');
 const formidable = require('formidable');
 const fileUpload = require('express-fileupload');
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/public'));
+//app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, 'public')));
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 // Use the express-fileupload middleware and limit size
@@ -146,13 +148,7 @@ app.post('/upload', (req, res) => {
       return res.sendStatus(400);
     }
 
-    // If does not have image mime type prevent from uploading
-  /*  if (/^image/.test(image.mimetype)) {
-      console.log("Not image MIME type");
-      return res.sendStatus(400);
-    }*/
-
-    image.mv(__dirname + '/uploads/' + image.name);
+    image.mv(__dirname + '/public/uploads/' + image.name);
 
     res.sendStatus(200);
 

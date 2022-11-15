@@ -176,10 +176,19 @@ function displayEntry(idOfCircle) {
   // Hide all dots on body by default
   $('.bodyCircle').hide();
 
+  if ($('#entryImg').length) {
+    $('#entryImg').remove();
+  }
   if (thisEntry.Type == "Body") {
     // Show the dot if a body entry is selected
     var bodyDotID = "#bodyDot" + thisEntry.entryID;
     $(bodyDotID).show();// = "block";
+  }
+  else if (thisEntry.Type == "Img") {
+    //$("#captionSpan").text(thisEntry.Caption);
+    var imgName = thisEntry.ImgID;
+    $('#infoDiv').prepend('<img id="entryImg" src="uploads/' + imgName + '" />')
+
   }
 
 }
