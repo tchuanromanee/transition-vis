@@ -19,12 +19,6 @@ var allLinks = []; // for all links in the timeline graph
 var bodyPosX = -1;
 var bodyPosY = -1;
 
-function parseEntries() {
-  for (let i = 0; i < entriesArray.length; i++) {
-    console.log(entriesArray[i].Title);
-  }
-}
-
 function getEntryByID(entryIDtoFind) {
   for (let i = 0; i < entriesArray.length; i++) {
     if (entriesArray[i].entryID == entryIDtoFind) {
@@ -72,9 +66,9 @@ function deleteVisibleEntry() {
     }
   }
 
-  console.log("Found matches for node:");
+  /*console.log("Found matches for node:");
   console.log(currentlyVisibleEntryID);
-  console.log(linkedNodes);
+  console.log(linkedNodes);*/
   // generate new links
   var newLinksGenerated = [];
   for (var i = 0; i < linkedNodes.length-1; i++) {
@@ -82,15 +76,15 @@ function deleteVisibleEntry() {
     newLinksGenerated.push(newLink);
   }
 
-  console.log("New Links Generated!:");
-  console.log(newLinksGenerated);
+  //console.log("New Links Generated!:");
+  //console.log(newLinksGenerated);
 
   // Link array in order: rewrite allLinks and commit to entriesArray
   // APPEND newAllLinksWithoutOverwrite with new links to write
   allLinks = newAllLinksWithoutOverwrite.concat(newLinksGenerated);
 
-  console.log("Brand New AllLinks:");
-  console.log(allLinks);
+  //console.log("Brand New AllLinks:");
+  //console.log(allLinks);
 
 
 
@@ -98,9 +92,8 @@ function deleteVisibleEntry() {
 
   updateEntryLinks();
 
-  console.log("Updated entriesArray:");
-  console.log(entriesArray);
-
+  //console.log("Updated entriesArray:");
+  //console.log(entriesArray);
 
   //Refresh to draw the circles and timeline again
   deleteAllDotsAndTimeline();
@@ -124,7 +117,7 @@ function updateEntryLinks() {
 }
 
 function sendEntriesToServer() {
-  console.log("Updating JSON");
+
   fetch('/', {
     method: 'POST',
     headers: {
@@ -133,10 +126,11 @@ function sendEntriesToServer() {
     body: JSON.stringify({
         entriesArray: JSON.stringify(entriesArray)
     })
-});
-
+  });
 }
-//parseEntries();
+
+
+
 var currentlyVisibleEntryID = -1;
 
 function circleClick() {
@@ -151,7 +145,7 @@ function circleClick() {
     indexOfCircleinLinks = links.indexOf(idOfCircle);
     if (indexOfCircleinLinks > -1) {
       links.splice(indexOfCircleinLinks, 1); // 2nd parameter means remove one item only
-      console.log("Circle removed from links!");
+      //console.log("Circle removed from links!");
       d3.select(this).attr("stroke", "#ffffff");
     }
     else {
@@ -160,7 +154,7 @@ function circleClick() {
       d3.select(this).attr("stroke", "#000000");
       links.push(idOfCircle);
       console.log("Circle clicked in add mode!");
-      console.log(links);
+      //console.log(links);
     }
   }
 
@@ -263,6 +257,25 @@ function addTextOnlyEntry() {
   today = mm + '/' + dd + '/' + yyyy;
   const dateControl = document.querySelector('input[type="date"]');
   dateControl.value = today;
+}
+
+function addImageEntry() {
+  //Once option selected, close modal to open add screen
+  $.modal.close();
+  resetEntryView();
+
+  // Show modal form
+  $('#addNewImageEntryModal').modal();
+  // Edit the date input so that it's today's dateSpan
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+
+  today = mm + '/' + dd + '/' + yyyy;
+  const dateControl = document.querySelector('input[type="date"]');
+  dateControl.value = today;
+
 }
 
 $(document).ready(function(event) {
@@ -387,6 +400,9 @@ function timelineSvgClick(pageX, pageY) { //this function will be the master for
     else if (placeNewBodyEntry && bodyDotPlaced) {
       writeNewBodyEntry(x,y);
     }
+    else if (placeNewImgEntry) {
+      writeNewImageEntry(x,y);
+    }
 
   }
 
@@ -451,8 +467,21 @@ function processNewTextEntry() {
   document.body.style.cursor = 'crosshair';
   $.modal.close();
 }
+
+function processNewImageEntry() {
+  // Place the new dot
+  placeNewImgEntry = true;
+
+  // Add guidance for placement
+  displayGuidance();
+
+
+  // Make the cursor a crosshair for add mode
+  document.body.style.cursor = 'crosshair';
+  $.modal.close();
+}
+
 function writeNewTextEntry(timelinePosX, timelinePosY) {
-  console.log("Processing form...");
   //console.log($('#addTextEntryForm').serializeArray());
   //Data: form-date=2022-07-22&form-title=asd&form-caption=&color=%23e66465
   var formData = $('#addTextEntryForm').serializeArray();
@@ -481,8 +510,8 @@ function writeNewTextEntry(timelinePosX, timelinePosY) {
     "Date": newDate,
     "EmotionScale": 5,
     "EmotionColor": newColor,
-    "BodyPositionX": 0,
-    "BodyPositionY": 0,
+    "BodyPositionX": -1,
+    "BodyPositionY": -1,
     "TimelineID": 1,
     "TimelinePositionX": timelinePosX,
     "TimelinePositionY": timelinePosY,
@@ -516,10 +545,90 @@ function writeNewTextEntry(timelinePosX, timelinePosY) {
 
 }
 
+function writeNewImageEntry(timelinePosX, timelinePosY) {
+  //console.log($('#addTextEntryForm').serializeArray());
+  //Data: form-date=2022-07-22&form-title=asd&form-caption=&color=%23e66465
+  var formData = $('#addImageEntryForm').serializeArray();
+
+  var newDate = formData[0].value;
+  var newTitle = formData[1].value;
+  var newCaption = formData[2].value;
+  var newColor = formData[3].value;
+
+    //File data: Extrct image upload from form data
+    var imgData = new FormData();
+    var file_data = $('input[name="image"]')[0].files;
+    var imgName = "";
+    if (file_data.length == 1) {
+      imgName = file_data[0].name;
+      imgData.append("image", file_data[0]);
+    }
+    // Send the uploaded image to the server
+  $.ajax({
+    url: '/upload',
+    data: imgData,
+    type: 'POST',
+    contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+    processData: false, // NEEDED, DON'T OMIT THIS
+    // ... Other options like success and etc
+});
+
+
+  // Generate an Entry ID (highest + 1)
+  var newEntryID = findHighestEntryID() + 1;
+
+  // Need to convert links to int in order to write in correct format to JSON
+  var linksAsInt = []
+
+  for (var i = 0; i < links.length; i++) {
+    linksAsInt.push(parseInt(links[i]));
+  }
+
+
+  // Add new entry to entriesarray
+  var newEntryToAdd = {
+    "entryID": newEntryID,
+    "Type": "Img",
+    "Date": newDate,
+    "EmotionScale": 5,
+    "EmotionColor": newColor,
+    "BodyPositionX": -1,
+    "BodyPositionY": -1,
+    "TimelineID": 1,
+    "TimelinePositionX": timelinePosX,
+    "TimelinePositionY": timelinePosY,
+    "Links": linksAsInt,
+    "Title": newTitle,
+    "Caption": newCaption,
+    "ImgID": imgName
+  };
+
+
+  entriesArray.push(newEntryToAdd);
+
+  // Send the data to the server
+
+  //sendEntriesToServer(); // Send the rest of the entries to the server
+
+
+  // Add the new dot in
+  drawDotsAndTimeline();
+
+  // Reset variables
+  placeNewTextEntry = false;
+  placeNewBodyEntry = false;
+  bodyDotPlaced = false;
+  placeNewImgEntry = false;
+
+
+  // Clear the links
+  links = [];
+
+
+}
+
 
 function writeNewBodyEntry(timelinePosX, timelinePosY) {
-  console.log("Processing body form...");
-  //console.log($('#addTextEntryForm').serializeArray());
   //Data: form-date=2022-07-22&form-title=asd&form-caption=&color=%23e66465
   var formData = $('#addBodyEntryForm').serializeArray();
 
@@ -596,24 +705,7 @@ function findHighestEntryID() {
   return highestID;
 }
 
-function addImageEntry() {
-  //Once option selected, close modal to open add screen
-  $.modal.close();
-  console.log("Add new image entry");
 
-  // Show modal form
-  $('#addNewImageEntryModal').modal();
-  // Edit the date input so that it's today's dateSpan
-  var today = new Date();
-  var dd = String(today.getDate()).padStart(2, '0');
-  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-  var yyyy = today.getFullYear();
-
-  today = mm + '/' + dd + '/' + yyyy;
-  const dateControl = document.querySelector('input[type="date"]');
-  dateControl.value = today;
-
-}
 
 function deleteAllDotsAndTimeline() {
 
@@ -690,7 +782,6 @@ function drawDotsAndTimeline() {
 
   var timeline = d3.line();
 
-  console.log(timelineCoords);
   // Draw the links
   for (let i = 0; i < timelineCoords.length; i++) {
     var newLine = svgTimelineContainer.append("line")
@@ -717,8 +808,6 @@ function drawBodyDots() {
       var emotionColor = entriesArray[i].EmotionColor;
       bodyPoints.push([xPos, yPos]);
       var stringID = "bodyDot" + entriesArray[i].entryID;
-      console.log("Body Dot id is");
-      console.log(stringID);
       svgContainer.append('circle')
         .attr('cx', xPos)
         .attr('cy', yPos)

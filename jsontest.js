@@ -5,12 +5,24 @@ var url = require('url');
 var http = require("http");
 const fs = require('fs');
 var app = express();
+const formidable = require('formidable');
+const fileUpload = require('express-fileupload');
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
+// Use the express-fileupload middleware and limit size
+app.use(
+    fileUpload({
+        limits: {
+            fileSize: 10000000, // Around 10MB
+        },
+        abortOnLimit: true,
+    })
+);
+
 
 //Bypass CORS and network errors
 app.use(function(req, res, next) {
@@ -88,11 +100,8 @@ function writeEntries() {
 
 // index page
 app.get('/', function(req, res) {
-  var tagline = "No programming concept is complete without a cute animal mascot.";
-
   res.render('pages/index', {
-    entriesArray: entriesArray,
-    tagline: tagline
+    entriesArray: entriesArray
   });
 });
 
@@ -104,6 +113,51 @@ app.post('/', function(request, response){
     // Write the changes to the JSON file
     writeEntries();
 });
+
+app.post('/upload', (req, res) => {
+    //console.log(req.body);
+    //console.log(req.files); // Get the image file uploaded
+    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    //var startup_image = req.files.foo;
+    //var fileName = req.body.fileName;
+   // Use the mv() method to place the file somewhere on your server
+   //startup_image.mv(__dirname + '/images/' + fileName + '.jpg' , function(err) {
+    // if(err){
+    //   console.log(err);
+     //}else{
+    //console.log("uploaded");
+//}
+   //});
+/*
+   const form = formidable({ multiples: true });
+    form.parse(req, (err, fields, files) => {
+        console.log('fields: ', fields);
+        console.log('files: ', files);
+        res.send({ success: true });
+    });
+    console.log("FOrm read");
+    console.log(form);*/
+
+    //console.log(req.files);
+    const {image} = req.files;
+
+    if (!image) {
+      console.log("Img blank");
+      return res.sendStatus(400);
+    }
+
+    // If does not have image mime type prevent from uploading
+  /*  if (/^image/.test(image.mimetype)) {
+      console.log("Not image MIME type");
+      return res.sendStatus(400);
+    }*/
+
+    image.mv(__dirname + '/uploads/' + image.name);
+
+    res.sendStatus(200);
+
+});
+
 
 
 // about page

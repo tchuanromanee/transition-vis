@@ -103,9 +103,39 @@
   </div>
   <!-- Modal HTML embedded directly into document -->
   <div id="addNewImageEntryModal" class="modal">
-    <h2>Enter information</h2>
-    Placeholder to place new dot on the timeline button
+    <h2>New Image Entry</h2>
+    <form id = "addImageEntryForm" enctype="multipart/form-data"  action="/upload" method="POST">
+      <div class="form-group">
+        <label for="formInputDate">Date of Entry</label>
+        <input type="date" id="formInputDate" name="form-date"
+       value="2022-07-22"
+       min="1920-01-01" max="2040-12-31" required>
+      </div>
+      <div class="form-group">
+        <label for="formInputTitle">Title for Entry</label>
+        <input type="text"  name="form-title" class="form-control" id="formInputTitle" aria-describedby="titleHelp" placeholder="Enter title" required>
+        <small id="titleHelp" class="form-text text-muted">Something descriptive for your entry.</small>
+      </div>
+      <div class="form-group">
+        <label for="formInputCaption">Entry text</label>
+        <textarea class="form-control"  name="form-caption" id="formInputCaption" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="formInputImage">Image for Entry</label>
+        <input type="file" name="image" aria-describedby="imageHelp" required />
+        <small id="imageHelp" class="form-text text-muted">An image for your entry.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="formInputColor">Color of your dot</label>
+        <input type="color" id="formInputColor" aria-describedby="colorHelp" name="color"
+           value="#e66465">
+           <small id="colorHelp" class="form-text text-muted">This color applies to the dot for both body and timeline</small>
+      </div>
+    </form>
+    <button type="submit" class="btn btn-primary" onclick="processNewImageEntry();">Submit</button>
     <a href="#" rel="modal:close">Cancel</a>
+
   </div>
 			<div class = "container-fluid">
       <div class="row">
