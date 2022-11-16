@@ -14,10 +14,13 @@ var placeNewTextEntry = false;
 var placeNewBodyEntry = false;
 var placeNewImgEntry = false;
 var bodyDotPlaced = false;
+var editingBodyEntry = false;
+var editingEntry = false;
 var links = []; // for new links to be added
 var allLinks = []; // for all links in the timeline graph
 var bodyPosX = -1;
 var bodyPosY = -1;
+
 
 function getEntryByID(entryIDtoFind) {
   for (let i = 0; i < entriesArray.length; i++) {
@@ -134,6 +137,9 @@ function sendEntriesToServer() {
 var currentlyVisibleEntryID = -1;
 
 function circleClick() {
+  if (editingEntry || editingBodyEntry) {
+    return;
+  }
   // Clear previously selected circle
   $('.timelineCircle').attr("stroke", "none");
 
@@ -176,15 +182,14 @@ function editEntry() {
 
   //get entry info from currentlyVisibleEntryID
   var thisEntry = getEntryByID(currentlyVisibleEntryID);
-  /*$("#dateLabel").text("Date: ");
-  $("#dateSpan").text(thisEntry.Date);
-  $("#titleSpan").text(thisEntry.Title);
-  $("#captionSpan").text(thisEntry.Caption);*/
-  //
-  //
-  //
-  //</div>
-  //prepend caption form fields
+  editingEntry = true;
+  if (thisEntry.Type == "Body") {
+    editingBodyEntry = true;
+  }
+
+
+
+  //prepend form fields
   $('#infoDiv').prepend('<form id ="editTextBodyEntryForm"><div class="form-group"><label for="formEditInputDate">Date of Entry</label><input type="date" id="formEditInputDate" name="form-date" value="' + thisEntry.Date + '" min="1920-01-01" max="2040-12-31"></div><div class="form-group"><label for="formEditInputTitle">Title for Entry</label><input type="text"  name="form-title" class="form-control" id="formEditInputTitle" value="' + thisEntry.Title + '"</div><div class="form-group"><label for="formInputCaption" id="editCaptionLabel">Edit text</label><textarea class="form-control"  name="form-caption" id="editCaptionInput" rows="3">' + thisEntry.Caption + '</textarea></div></form>')
 }
 
@@ -217,6 +222,9 @@ function commitEdits() {
   entriesArray[arrayIndex].Caption = newCaption;
   sendEntriesToServer();
   displayEntry(currentlyVisibleEntryID);
+  // Reset variables
+  editingBodyEntry = false;
+  editingEntry = false;
 }
 
 function cancelEdits() {
@@ -225,6 +233,8 @@ function cancelEdits() {
     // Reset to entry view
     displayEntry(currentlyVisibleEntryID);
     document.body.style.cursor = 'default';
+    editingBodyEntry = false;
+    editingEntry = false;
     return;
   } else {
     console.log("Continuing to edit");
@@ -267,7 +277,7 @@ function displayEntry(idOfCircle) {
   else if (thisEntry.Type == "Img") {
     //$("#captionSpan").text(thisEntry.Caption);
     var imgName = thisEntry.ImgID;
-    $('#infoDiv').prepend('<img id="entryImg" src="uploads/' + imgName + '" />')
+    $('#infoDiv').prepend('<img id="entryImg" src="uploads/' + imgName + '" /> <br />')
 
   }
 
@@ -370,13 +380,6 @@ function addImageEntry() {
 $(document).ready(function(event) {
   document.oncontextmenu = function() {return false;};
 
-  /*$('#timelineSVG').click(function(event) {
-    // Grab the x and y coords of the click and let the functions do the offset calcs
-    var pageX = event.pageX;
-    var pageY = event.pageY;
-    timelineSvgClick(pageX,pageY)
-  });*/
-
   $('#timelineSVG').mousedown(function(event) { // right click to cancel add mode
     if( event.button == 2 ) {  // Right mouse button clicked!
       if (placeNewImgEntry || placeNewTextEntry || placeNewBodyEntry) { // Right clicked in PLACE mode
@@ -437,7 +440,20 @@ $(document).ready(function(event) {
       return false;
     }
   });
-  //$('#timelineSVG').click(timelineSvgClick);
+
+  $('.timelineCircle').on('dragstart', function (event) {
+    if (editingEntry) {
+      //LEFTOFF
+      //https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_ondragstart
+      //https://stackoverflow.com/questions/51706294/angular4-due-to-dragstart-event-is-firing-due-to-mousedown-event
+
+      //event.originalEvent.dataTransfer.setData('...', '...');
+      console.log(evt.originalEvent.dataTransfer);
+      //evt.originalEvent.dataTransfer.data("DownloadURL",fileDetails);
+
+    }
+});
+
 });
 
 
