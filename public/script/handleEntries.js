@@ -167,7 +167,69 @@ function circleClick() {
 }
 
 function editEntry() {
-  //currentlyVisibleEntryID
+  // Hide and show irrelevant info
+  resetEntryView();
+  $("#saveEntryButton").show();
+  $("#cancelEntryEditButton").show();
+
+  document.body.style.cursor = 'crosshair';
+
+  //get entry info from currentlyVisibleEntryID
+  var thisEntry = getEntryByID(currentlyVisibleEntryID);
+  /*$("#dateLabel").text("Date: ");
+  $("#dateSpan").text(thisEntry.Date);
+  $("#titleSpan").text(thisEntry.Title);
+  $("#captionSpan").text(thisEntry.Caption);*/
+  //
+  //
+  //
+  //</div>
+  //prepend caption form fields
+  $('#infoDiv').prepend('<form id ="editTextBodyEntryForm"><div class="form-group"><label for="formEditInputDate">Date of Entry</label><input type="date" id="formEditInputDate" name="form-date" value="' + thisEntry.Date + '" min="1920-01-01" max="2040-12-31"></div><div class="form-group"><label for="formEditInputTitle">Title for Entry</label><input type="text"  name="form-title" class="form-control" id="formEditInputTitle" value="' + thisEntry.Title + '"</div><div class="form-group"><label for="formInputCaption" id="editCaptionLabel">Edit text</label><textarea class="form-control"  name="form-caption" id="editCaptionInput" rows="3">' + thisEntry.Caption + '</textarea></div></form>')
+}
+
+function commitEdits() {
+  // Main function to write new changes of the edited entry to JSON
+
+  //ask user to confirm
+  if (confirm('Are you sure you want to save these changes?')) {
+    console.log("Committing edits");
+  } else {
+    return;
+  }
+
+  document.body.style.cursor = 'default';
+  // Pull from form and write to JSON, then reset view
+  //var thisEntry = getEntryByID(currentlyVisibleEntryID);
+  var arrayIndex = getEntryIndexByID(currentlyVisibleEntryID);
+
+  var formData = $('#editTextBodyEntryForm').serializeArray();
+
+  var newDate = formData[0].value;
+  var newTitle = formData[1].value;
+  var newCaption = formData[2].value;
+  /*
+  var newColor = formData[3].value;
+  */
+  // Overwrite variables
+  entriesArray[arrayIndex].Date = newDate;
+  entriesArray[arrayIndex].Title = newTitle;
+  entriesArray[arrayIndex].Caption = newCaption;
+  sendEntriesToServer();
+  displayEntry(currentlyVisibleEntryID);
+}
+
+function cancelEdits() {
+
+  if (confirm('Are you sure you want to go back?')) {
+    // Reset to entry view
+    displayEntry(currentlyVisibleEntryID);
+    document.body.style.cursor = 'default';
+    return;
+  } else {
+    console.log("Continuing to edit");
+  }
+
 }
 
 function displayEntry(idOfCircle) {
@@ -183,6 +245,14 @@ function displayEntry(idOfCircle) {
   // Show the buttons
   $("#editEntryButton").show();
   $("#deleteEntryButton").show();
+
+  //Hide any edit fields if exist or shown
+  $("#saveEntryButton").hide();
+  $("#cancelEntryEditButton").hide();
+  $("#editTextBodyEntryForm").remove();
+  //$("#editCaptionInput").remove();
+//  $("#e").remove();
+  $("#editCaptionInput").remove();
   // Hide all dots on body by default
   $('.bodyCircle').hide();
 
