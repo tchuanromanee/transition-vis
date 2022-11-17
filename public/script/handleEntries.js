@@ -136,10 +136,11 @@ function sendEntriesToServer() {
 
 var currentlyVisibleEntryID = -1;
 
-function circleClick() {
+function circleClick(event) {
   if (editingEntry || editingBodyEntry) {
     return;
   }
+  if (event.defaultPrevented) return; // dragged
   // Clear previously selected circle
   $('.timelineCircle').attr("stroke", "none");
 
@@ -441,20 +442,22 @@ $(document).ready(function(event) {
     }
   });
 
-  $('.timelineCircle').on('dragstart', function (event) {
-    if (editingEntry) {
-      //LEFTOFF
-      //https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_ondragstart
-      //https://stackoverflow.com/questions/51706294/angular4-due-to-dragstart-event-is-firing-due-to-mousedown-event
-
-      //event.originalEvent.dataTransfer.setData('...', '...');
-      console.log(evt.originalEvent.dataTransfer);
-      //evt.originalEvent.dataTransfer.data("DownloadURL",fileDetails);
-
-    }
 });
 
-});
+function dragstarted(d) {
+            d3.select(this).raise().classed("active", true);
+            d3.select(this).attr("stroke", "#000000");
+        }
+
+        function dragged(d) {
+            // TODO: Manage svg offset
+            d3.select(this).attr("cx", d.x = event.x).attr("cy", d.y = event.y);
+        }
+
+        function dragended(d) {
+            d3.select(this).classed("active", false);
+            d3.select(this).attr("stroke", "none");
+        }
 
 
 
@@ -881,7 +884,12 @@ function drawDotsAndTimeline() {
           d3.select(this).style("fill", emotionColor);
           // TODO: Remove tiny tooltip with basic info on the entry
       })
-      .on("mousedown", circleClick); // TODO: Check if click and drag will change
+      .on("click", circleClick)
+      .call(d3.drag()
+                  .on("start", dragstarted)
+                  .on("drag", dragged)
+                  .on("end", dragended)
+                  );
   }
   // Draw the timeline
 
