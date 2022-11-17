@@ -222,6 +222,13 @@ function commitEdits() {
   entriesArray[arrayIndex].Title = newTitle;
   entriesArray[arrayIndex].Caption = newCaption;
   sendEntriesToServer();
+  // Redraw links and timeline
+  deleteAllDotsAndTimeline();
+  drawDotsAndTimeline();
+  if (editingBodyEntry) {
+
+    drawBodyDots();
+  }
   displayEntry(currentlyVisibleEntryID);
   // Reset variables
   editingBodyEntry = false;
@@ -445,24 +452,36 @@ $(document).ready(function(event) {
 });
 
 function dragstarted(d) {
-            d3.select(this).raise().classed("active", true);
-            d3.select(this).attr("stroke", "#000000");
+    if (editingEntry || editingBodyEntry) {
+      d3.select(this).raise().classed("active", true);
+      d3.select(this).attr("stroke", "#000000");
+    }
+
         }
 
         function dragged(d) {
-
+          if (editingEntry || editingBodyEntry) {
             //calculate the timeline coordinates
             var offsetX = $('#timelineSVG').offset().left;
             var offsetY = $('#timelineSVG').offset().top;
             var x = event.x - offsetX;
             var y = event.y - offsetY;
             d3.select(this).attr("cx", d.x = x).attr("cy", d.y = y);
+
+          }
         }
 
         function dragended(d) {
+          if (editingEntry || editingBodyEntry) {
             d3.select(this).classed("active", false);
             d3.select(this).attr("stroke", "none");
-            // TODO: Update entry attribute with position x and y
+            // Update entry attribute with position x and y
+            // write to entry
+            var arrayIndex = getEntryIndexByID(currentlyVisibleEntryID);
+            entriesArray[arrayIndex].TimelinePositionX = d3.select(this).attr('cx');
+            entriesArray[arrayIndex].TimelinePositionY = d3.select(this).attr('cy');
+            //sendEntriesToServer();
+          }
         }
 
 
