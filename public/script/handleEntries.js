@@ -450,13 +450,19 @@ function dragstarted(d) {
         }
 
         function dragged(d) {
-            // TODO: Manage svg offset
-            d3.select(this).attr("cx", d.x = event.x).attr("cy", d.y = event.y);
+
+            //calculate the timeline coordinates
+            var offsetX = $('#timelineSVG').offset().left;
+            var offsetY = $('#timelineSVG').offset().top;
+            var x = event.x - offsetX;
+            var y = event.y - offsetY;
+            d3.select(this).attr("cx", d.x = x).attr("cy", d.y = y);
         }
 
         function dragended(d) {
             d3.select(this).classed("active", false);
             d3.select(this).attr("stroke", "none");
+            // TODO: Update entry attribute with position x and y
         }
 
 
