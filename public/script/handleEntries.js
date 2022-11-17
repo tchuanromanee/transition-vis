@@ -453,34 +453,53 @@ $(document).ready(function(event) {
 
 function dragstarted(d) {
     if (editingEntry || editingBodyEntry) {
-      d3.select(this).raise().classed("active", true);
-      d3.select(this).attr("stroke", "#000000");
+      var fullCircleID = d3.select(this).attr("id");
+      var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+      //currentlyVisibleEntryID = idOfCircle;
+
+      if (currentlyVisibleEntryID == idOfCircle) {
+        d3.select(this).raise().classed("active", true);
+        d3.select(this).attr("stroke", "#000000");
+      }
     }
 
         }
 
         function dragged(d) {
           if (editingEntry || editingBodyEntry) {
+            // Only allow the currently edited circle to be dragged
+            var fullCircleID = d3.select(this).attr("id");
+            var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+            //currentlyVisibleEntryID = idOfCircle;
+
+            if (currentlyVisibleEntryID == idOfCircle) {
             //calculate the timeline coordinates
             var offsetX = $('#timelineSVG').offset().left;
             var offsetY = $('#timelineSVG').offset().top;
             var x = event.x - offsetX;
             var y = event.y - offsetY;
             d3.select(this).attr("cx", d.x = x).attr("cy", d.y = y);
+          }
 
           }
         }
 
         function dragended(d) {
           if (editingEntry || editingBodyEntry) {
+            var fullCircleID = d3.select(this).attr("id");
+            var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+            //currentlyVisibleEntryID = idOfCircle;
+
+            if (currentlyVisibleEntryID == idOfCircle) {
             d3.select(this).classed("active", false);
-            d3.select(this).attr("stroke", "none");
+          //  d3.select(this).attr("stroke", "none");
             // Update entry attribute with position x and y
             // write to entry
             var arrayIndex = getEntryIndexByID(currentlyVisibleEntryID);
             entriesArray[arrayIndex].TimelinePositionX = d3.select(this).attr('cx');
             entriesArray[arrayIndex].TimelinePositionY = d3.select(this).attr('cy');
             //sendEntriesToServer();
+          }
           }
         }
 
