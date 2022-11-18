@@ -196,7 +196,7 @@ function editEntry() {
 
 
   //prepend form fields
-  $('#infoDiv').prepend('<form id ="editTextBodyEntryForm"><div class="form-group"><label for="formEditInputDate">Date of Entry</label><input type="date" id="formEditInputDate" name="form-date" value="' + thisEntry.Date + '" min="1920-01-01" max="2040-12-31"></div><div class="form-group"><label for="formEditInputTitle">Title for Entry</label><input type="text"  name="form-title" class="form-control" id="formEditInputTitle" value="' + thisEntry.Title + '"</div><div class="form-group"><label for="formInputCaption" id="editCaptionLabel">Edit text</label><textarea class="form-control"  name="form-caption" id="editCaptionInput" rows="3">' + thisEntry.Caption + '</textarea></div></form>')
+  $('#infoDiv').prepend('<form id ="editTextBodyEntryForm"><div class="form-group"><label for="formEditInputDate">Date of Entry</label><input type="date" id="formEditInputDate" name="form-date" value="' + thisEntry.Date + '" min="1920-01-01" max="2040-12-31"></div><div class="form-group"><label for="formEditInputTitle">Title for Entry</label><input type="text"  name="form-title" class="form-control" id="formEditInputTitle" value="' + thisEntry.Title + '"</div><div class="form-group"><label for="formInputCaption" id="editCaptionLabel">Edit text</label><textarea class="form-control"  name="form-caption" id="editCaptionInput" rows="3">' + thisEntry.Caption + '</textarea></div>Color of your Dot:<div class="btn-group btn-group-toggle" role="group" aria-label="Basic example" data-toggle="buttons"><label class="btn btn-secondary active" id="button-8dd3c7"><input type="radio" name="colorsEdit" autocomplete="off" value = "#8dd3c7" checked>&nbsp;</label><label class="btn btn-secondary" id="button-ffffb3"><input type="radio" name="colorsEdit" id="option2" value = "#ffffb3" autocomplete="off">&nbsp;</label><label class="btn btn-secondary" id="button-bebada"><input type="radio" name="colorsEdit" id="option3" value = "#bebada" autocomplete="off">&nbsp;</label><label class="btn btn-secondary active" id="button-fb8072"><input type="radio" name="colorsEdit" autocomplete="off" value = "#fb8072">&nbsp;</label><label class="btn btn-secondary active" id="button-80b1d3"><input type="radio" name="colorsEdit" autocomplete="off" value = "#80b1d3">&nbsp;</label><label class="btn btn-secondary active" id="button-fdb462"><input type="radio" name="colorsEdit" autocomplete="off" value = "#fdb462">&nbsp;</label><label class="btn btn-secondary active" id="button-b3de69"><input type="radio" name="colorsEdit" autocomplete="off" value = "#b3de69">&nbsp;</label><label class="btn btn-secondary active" id="button-fccde5"><input type="radio" name="colorsEdit" autocomplete="off" value = "#fccde5">&nbsp;</label><label class="btn btn-secondary active" id="button-d9d9d9"><input type="radio" name="colorsEdit" autocomplete="off" value = "#d9d9d9">&nbsp;</label><label class="btn btn-secondary active" id="button-bc80bd"><input type="radio" name="colorsEdit" autocomplete="off" value = "#bc80bd">&nbsp;</label><label class="btn btn-secondary active" id="button-ccebc5"><input type="radio" name="colorsEdit" autocomplete="off" value = "#ccebc5">&nbsp;</label><label class="btn btn-secondary active" id="button-ffed6f"><input type="radio" name="colorsEdit" autocomplete="off" value = "#ffed6f">&nbsp;</label></div></form>')
 }
 
 function commitEdits() {
@@ -219,13 +219,13 @@ function commitEdits() {
   var newDate = formData[0].value;
   var newTitle = formData[1].value;
   var newCaption = formData[2].value;
-  /*
-  var newColor = formData[3].value;
-  */
+  var newColor = $("input[name='colorsEdit']:checked").val(); //undefined
+  console.log(newColor);
   // Overwrite variables
   entriesArray[arrayIndex].Date = newDate;
   entriesArray[arrayIndex].Title = newTitle;
   entriesArray[arrayIndex].Caption = newCaption;
+  entriesArray[arrayIndex].EmotionColor = newColor;
   sendEntriesToServer();
   hideGuidance();
   // Redraw links and timeline
@@ -727,7 +727,8 @@ function writeNewTextEntry(timelinePosX, timelinePosY) {
   var newDate = formData[0].value;
   var newTitle = formData[1].value;
   var newCaption = formData[2].value;
-  var newColor = formData[3].value;
+  var newColor = $("input[name='colorsText']:checked").val();
+
 
   // Generate an Entry ID (highest + 1)
   var newEntryID = findHighestEntryID() + 1;
@@ -791,7 +792,7 @@ function writeNewImageEntry(timelinePosX, timelinePosY) {
   var newDate = formData[0].value;
   var newTitle = formData[1].value;
   var newCaption = formData[2].value;
-  var newColor = formData[3].value;
+  var newColor = $("input[name='colorsImg']:checked").val();
 
     //File data: Extrct image upload from form data
     var imgData = new FormData();
@@ -873,7 +874,7 @@ function writeNewBodyEntry(timelinePosX, timelinePosY) {
   var newDate = formData[0].value;
   var newTitle = formData[1].value;
   var newCaption = formData[2].value;
-  var newColor = formData[3].value;
+  var newColor = $("input[name='colorsBody']:checked").val();
 
   // Generate an Entry ID (highest + 1)
   var newEntryID = findHighestEntryID() + 1;
