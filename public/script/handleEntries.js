@@ -185,7 +185,11 @@ function editEntry() {
   var thisEntry = getEntryByID(currentlyVisibleEntryID);
   editingEntry = true;
   if (thisEntry.Type == "Body") {
+    displayEditBodyGuidance();
     editingBodyEntry = true;
+  }
+  else {
+    displayEditGuidance();
   }
 
 
@@ -222,6 +226,7 @@ function commitEdits() {
   entriesArray[arrayIndex].Title = newTitle;
   entriesArray[arrayIndex].Caption = newCaption;
   sendEntriesToServer();
+  hideGuidance();
   // Redraw links and timeline
   deleteAllDotsAndTimeline();
   drawDotsAndTimeline();
@@ -299,6 +304,16 @@ function displayGuidance() {
 function displayBodyGuidance() {
   // Show the entry attributes
   $("#guidanceText").text("Click on the point on the body where you want to add the new dot. Then, click on any dot(s) to create a link to your new entry. Once you're done clicking on all the dots you want, click anywhere on the canvas to place the new dot. Right click to cancel.");
+}
+
+function displayEditGuidance() {
+  // Show the entry attributes
+  $("#guidanceText").text("You can click and drag the dots to reposition them. The line(s) will be redrawn when you save your changes. Unfortunately, you can't edit or remove images.");
+}
+
+function displayEditBodyGuidance() {
+  // Show the entry attributes
+  $("#guidanceText").text("You can click and drag the dots on the timeline and/or body to reposition them. The line(s) will be redrawn when you save your changes.");
 }
 
 
@@ -473,12 +488,13 @@ function dragstarted(d) {
             //currentlyVisibleEntryID = idOfCircle;
 
             if (currentlyVisibleEntryID == idOfCircle) {
-            //calculate the timeline coordinates
-            var offsetX = $('#timelineSVG').offset().left;
-            var offsetY = $('#timelineSVG').offset().top;
-            var x = event.x - offsetX;
-            var y = event.y - offsetY;
-            d3.select(this).attr("cx", d.x = x).attr("cy", d.y = y);
+              //calculate the timeline coordinates
+              var offsetX = $('#timelineSVG').offset().left;
+              var offsetY = $('#timelineSVG').offset().top;
+              var x = event.x - offsetX;
+              var y = event.y - offsetY;
+              // TODO: Prevent dot from being dragged out of bounds of the svg
+              d3.select(this).attr("cx", d.x = x).attr("cy", d.y = y);
           }
 
           }
@@ -584,6 +600,14 @@ function bodySvgClick(pageX, pageY) { //this function will be the master for han
     var offsetY = $('#bodySVG').offset().top;
     bodyPosX = pageX - offsetX;
     bodyPosY = pageY - offsetY;
+
+    svgContainer.append('circle')
+      .attr('cx', bodyPosX)
+      .attr('cy', bodyPosY)
+      .attr('r', 8)
+      .attr('class', "bodyCircle")
+      .style('fill', '#EEEEEE');
+
 
   }
 
@@ -832,6 +856,8 @@ function writeNewBodyEntry(timelinePosX, timelinePosY) {
 
   // Also add new body dot in
   drawBodyDots();
+
+  resetEntryView();
 
   // Reset variables
   placeNewTextEntry = false;
