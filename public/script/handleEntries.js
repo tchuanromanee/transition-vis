@@ -185,13 +185,14 @@ function editEntry() {
   var thisEntry = getEntryByID(currentlyVisibleEntryID);
   editingEntry = true;
   if (thisEntry.Type == "Body") {
+    var bodyDotID = "#bodyDot" + thisEntry.entryID;
+    $(bodyDotID).show();// = "block";
     displayEditBodyGuidance();
     editingBodyEntry = true;
   }
   else {
     displayEditGuidance();
   }
-
 
 
   //prepend form fields
@@ -494,7 +495,13 @@ function dragstarted(d) {
               var x = event.x - offsetX;
               var y = event.y - offsetY;
               // TODO: Prevent dot from being dragged out of bounds of the svg
-              d3.select(this).attr("cx", d.x = x).attr("cy", d.y = y);
+              //https://stackoverflow.com/questions/60163388/javascript-prevent-draggable-div-outside-parent-div
+              var boun = document.getElementById("timelineSVG").offsetWidth-document.getElementById(fullCircleID).offsetWidth;
+              //  if((x>0)&&(x<boun)&&(y>0)&&(y<boun)) {
+                            d3.select(this).attr("cx", d.x = x).attr("cy", d.y = y);
+                //        }
+
+
           }
 
           }
@@ -518,6 +525,61 @@ function dragstarted(d) {
           }
           }
         }
+
+        function bodyCircleDragStarted(d) {
+            if (editingBodyEntry) {
+              //var fullCircleID = d3.select(this).attr("id");
+              //var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+              //currentlyVisibleEntryID = idOfCircle;
+
+              //if (currentlyVisibleEntryID == idOfCircle) {
+                d3.select(this).raise().classed("active", true);
+              //  d3.select(this).attr("stroke", "#000000");
+              //}
+            }
+
+                }
+
+                function bodyCircleDragged(d) {
+                  if (editingBodyEntry) {
+                    // Only allow the currently edited circle to be dragged
+                    var fullCircleID = d3.select(this).attr("id");
+                    var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+                    //currentlyVisibleEntryID = idOfCircle;
+
+                    if (currentlyVisibleEntryID == idOfCircle) {
+                      //calculate the timeline coordinates
+                      var offsetX = $('#bodySVG').offset().left;
+                      var offsetY = $('#bodySVG').offset().top;
+                      bodyPosX = event.x - offsetX;
+                      bodyPosY = event.y - offsetY;
+                      // TODO: Prevent dot from being dragged out of bounds of the svg
+                      d3.select(this).attr("cx", bodyPosX).attr("cy", bodyPosY);
+                  }
+
+                  }
+                }
+
+                function bodyCircleDragEnded(d) {
+                  if (editingBodyEntry) {
+                    var fullCircleID = d3.select(this).attr("id");
+                    var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+                    //currentlyVisibleEntryID = idOfCircle;
+
+                    if (currentlyVisibleEntryID == idOfCircle) {
+                    d3.select(this).classed("active", false);
+                  //  d3.select(this).attr("stroke", "none");
+                    // Update entry attribute with position x and y
+                    // write to entry
+                    var arrayIndex = getEntryIndexByID(currentlyVisibleEntryID);
+                    entriesArray[arrayIndex].BodyPositionX = bodyPosX;
+                    entriesArray[arrayIndex].BodyPositionY = bodyPosY;
+                    bodyPosX = -1;
+                    bodyPosY = -1;
+                    //sendEntriesToServer();
+                  }
+                  }
+                }
 
 
 
@@ -998,7 +1060,12 @@ function drawBodyDots() {
         .attr('id', stringID)
         .attr('class', "bodyCircle")
         .style('fill', emotionColor)
-        .style('display', 'none');
+        .style('display', 'none')
+        .call(d3.drag()
+                    .on("start", bodyCircleDragStarted)
+                    .on("drag", bodyCircleDragged)
+                    .on("end", bodyCircleDragEnded)
+                    );
     }
   }
 }
