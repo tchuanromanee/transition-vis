@@ -173,6 +173,27 @@ function circleClick(event) {
 
 }
 
+function linkClick(event) {
+  if (!editingEntry && !editingBodyEntry) {
+    return;
+  }
+  if (confirm('Are you sure you want to remove this link?')) {
+    console.log("Link removed");
+  } else {
+    return;
+  }
+  //if (event.defaultPrevented) return; // dragged
+  // Clear previously selected circle
+
+  //var fullCircleID = d3.select(this).attr('id');
+  //var idOfCircle = fullCircleID.replace ( /[^\d.]/g, '' );//slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+  //currentlyVisibleEntryID = idOfCircle;
+
+  //currentlyVisibleEntryID
+  //d3.select(this).attr("stroke", "#000000");
+
+}
+
 function editEntry() {
   // Hide and show irrelevant info
   resetEntryView();
@@ -996,7 +1017,7 @@ function drawDotsAndTimeline() {
       // Push x and y coords for timeline if reading for this particular ID
       var xPosOther = otherEntryCoords[0];
       var yPosOther = otherEntryCoords[1];
-      let newLink = {x1: xPos, y1: yPos, x2: xPosOther, y2: yPosOther};
+      let newLink = {x1: xPos, y1: yPos, x2: xPosOther, y2: yPosOther, linkOne: thisEntryID, linkTwo: theseLinks[j]};
       timelineCoords.push(newLink);
     }
 
@@ -1031,6 +1052,7 @@ function drawDotsAndTimeline() {
 
   // Draw the links
   for (let i = 0; i < timelineCoords.length; i++) {
+    var newLinkID = "link" + timelineCoords[i].linkOne + "-" + timelineCoords[i].linkTwo;
     var newLine = svgTimelineContainer.append("line")
     .attr("x1",timelineCoords[i].x1)
     .attr("y1", timelineCoords[i].y1)
@@ -1038,7 +1060,8 @@ function drawDotsAndTimeline() {
     .attr("y2", timelineCoords[i].y2)
     .attr('class', "timeline")
     .attr("stroke-width", 2)
-    .attr("stroke", "black");
+    .attr("stroke", "black")
+    .on("click", linkClick);
   }
 
 }
