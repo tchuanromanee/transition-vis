@@ -145,7 +145,7 @@ function circleClick(event) {
   $('.timelineCircle').attr("stroke", "none");
 
   var fullCircleID = d3.select(this).attr('id');
-  var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+  var idOfCircle = fullCircleID.replace ( /[^\d.]/g, '' );//slice(-1); // Circle ID and entry ID are the same when we created the circle elements
   currentlyVisibleEntryID = idOfCircle;
   if (!placeNewTextEntry && !placeNewBodyEntry && !placeNewImgEntry) {
     // Click on circle and draw stroke to indicate it has been selected
@@ -476,7 +476,7 @@ $(document).ready(function(event) {
 function dragstarted(d) {
     if (editingEntry || editingBodyEntry) {
       var fullCircleID = d3.select(this).attr("id");
-      var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+      var idOfCircle = fullCircleID.replace ( /[^\d.]/g, '' );//slice(-1); // Circle ID and entry ID are the same when we created the circle elements
       //currentlyVisibleEntryID = idOfCircle;
 
       if (currentlyVisibleEntryID == idOfCircle) {
@@ -491,7 +491,7 @@ function dragstarted(d) {
           if (editingEntry || editingBodyEntry) {
             // Only allow the currently edited circle to be dragged
             var fullCircleID = d3.select(this).attr("id");
-            var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+            var idOfCircle = fullCircleID.replace ( /[^\d.]/g, '' );//slice(-1); // Circle ID and entry ID are the same when we created the circle elements
             //currentlyVisibleEntryID = idOfCircle;
 
             if (currentlyVisibleEntryID == idOfCircle) {
@@ -516,7 +516,7 @@ function dragstarted(d) {
         function dragended(d) {
           if (editingEntry || editingBodyEntry) {
             var fullCircleID = d3.select(this).attr("id");
-            var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+            var idOfCircle = fullCircleID.replace ( /[^\d.]/g, '' );//slice(-1); // Circle ID and entry ID are the same when we created the circle elements
             //currentlyVisibleEntryID = idOfCircle;
 
             if (currentlyVisibleEntryID == idOfCircle) {
@@ -534,11 +534,6 @@ function dragstarted(d) {
 
         function bodyCircleDragStarted(d) {
             if (editingBodyEntry) {
-              //var fullCircleID = d3.select(this).attr("id");
-              //var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
-              //currentlyVisibleEntryID = idOfCircle;
-
-              //if (currentlyVisibleEntryID == idOfCircle) {
                 d3.select(this).raise().classed("active", true);
               //  d3.select(this).attr("stroke", "#000000");
               //}
@@ -550,7 +545,7 @@ function dragstarted(d) {
                   if (editingBodyEntry) {
                     // Only allow the currently edited circle to be dragged
                     var fullCircleID = d3.select(this).attr("id");
-                    var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+                    var idOfCircle = fullCircleID.replace ( /[^\d.]/g, '' );//slice(-1); // Circle ID and entry ID are the same when we created the circle elements
                     //currentlyVisibleEntryID = idOfCircle;
 
                     if (currentlyVisibleEntryID == idOfCircle) {
@@ -569,7 +564,7 @@ function dragstarted(d) {
                 function bodyCircleDragEnded(d) {
                   if (editingBodyEntry) {
                     var fullCircleID = d3.select(this).attr("id");
-                    var idOfCircle = fullCircleID.slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+                    var idOfCircle = fullCircleID.replace ( /[^\d.]/g, '' );//slice(-1); // Circle ID and entry ID are the same when we created the circle elements
                     //currentlyVisibleEntryID = idOfCircle;
 
                     if (currentlyVisibleEntryID == idOfCircle) {
