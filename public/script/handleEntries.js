@@ -182,6 +182,16 @@ function linkClick(event) {
   } else {
     return;
   }
+  // Get all links
+
+  // Find link with ID that has the current circle ID
+
+  // Remove the link
+
+  // Update the entry Links attribute if exists
+
+  // Write to JSON
+
   //if (event.defaultPrevented) return; // dragged
   // Clear previously selected circle
 
@@ -1003,6 +1013,8 @@ function drawDotsAndTimeline() {
     var xPos = entriesArray[i].TimelinePositionX;
     var yPos = entriesArray[i].TimelinePositionY;
     var emotionColor = entriesArray[i].EmotionColor;
+    console.log("emotionColor: ");
+    console.log(emotionColor);
 
     // Grab the links and populate
     var theseLinks = entriesArray[i].Links;
@@ -1036,7 +1048,7 @@ function drawDotsAndTimeline() {
           // TODO: Show a tiny tooltip with basic info on the entry
       })
       .on("mouseout", function(d) {
-          d3.select(this).style("fill", emotionColor);
+          d3.select(this).style("fill", entriesArray[i].EmotionColor);
           // TODO: Remove tiny tooltip with basic info on the entry
       })
       .on("click", circleClick)
