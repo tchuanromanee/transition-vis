@@ -79,15 +79,10 @@ function deleteVisibleEntry() {
     newLinksGenerated.push(newLink);
   }
 
-  //console.log("New Links Generated!:");
-  //console.log(newLinksGenerated);
-
   // Link array in order: rewrite allLinks and commit to entriesArray
   // APPEND newAllLinksWithoutOverwrite with new links to write
   allLinks = newAllLinksWithoutOverwrite.concat(newLinksGenerated);
 
-  //console.log("Brand New AllLinks:");
-  //console.log(allLinks);
 
 
 
@@ -107,12 +102,18 @@ function deleteVisibleEntry() {
 }
 
 function updateEntryLinks() {
+  // Clear all links first
+  for (var i = 0; i < entriesArray.length; i++) {
+      entriesArray[i].Links = []; // Clear links first
+  }
+
+
   // grab from AllLinks
   for (var i = 0; i < allLinks.length; i++) {
     var thisEntryID = allLinks[i][0];
     var entryToLinkID = allLinks[i][1];
     var thisEntryIndex = getEntryIndexByID(thisEntryID);
-    entriesArray[thisEntryIndex].Links = []; // Clear links first
+
     if (!entriesArray[thisEntryIndex].Links.includes(entryToLinkID)) {
       entriesArray[thisEntryIndex].Links.push(entryToLinkID);
     }
@@ -1007,14 +1008,13 @@ function drawDotsAndTimeline() {
   var timelinePoints = [];
   // For each entry, draw the dot on the timeline and populate links
   var timelineCoords = [];
+  allLinks = []; // Reset global variable
   for (let i = 0; i < entriesArray.length; i++) {
     // Read the x and y coordinates of the timeline
     var thisEntryID = entriesArray[i].entryID;
     var xPos = entriesArray[i].TimelinePositionX;
     var yPos = entriesArray[i].TimelinePositionY;
     var emotionColor = entriesArray[i].EmotionColor;
-    console.log("emotionColor: ");
-    console.log(emotionColor);
 
     // Grab the links and populate
     var theseLinks = entriesArray[i].Links;
@@ -1073,6 +1073,14 @@ function drawDotsAndTimeline() {
     .attr('class', "timeline")
     .attr("stroke-width", 2)
     .attr("stroke", "black")
+    .on("mouseover", function(d) {
+        d3.select(this).style("stroke", "#fff8ee");
+        // TODO: Show a tiny tooltip with basic info on the entry
+    })
+    .on("mouseout", function(d) {
+        d3.select(this).style("stroke","black");
+        // TODO: Remove tiny tooltip with basic info on the entry
+    })
     .on("click", linkClick);
   }
 
