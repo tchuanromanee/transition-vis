@@ -137,7 +137,29 @@ var currentlyVisibleEntryID = -1;
 
 function circleClick(event) {
   if (editingEntry || editingBodyEntry) {
-    return;
+    if (confirm('Do you want to add a link to this circle?')) {
+      console.log("Link added");
+    } else {
+      return;
+    }
+    // get this circle ID
+    //currentlyVisibleEntryID
+    var clickedCircleFullID = d3.select(this).attr('id');
+    var clickedCircleID = clickedCircleFullID.replace ( /[^\d.]/g, '' );//slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+
+    // Draw a link between currentlyVisibleEntryID and clickedCircleID
+    var newLink = [clickedCircleID, currentlyVisibleEntryID]
+    allLinks.push(newLink);
+
+    // Write to JSON
+      updateEntryLinks();
+
+      deleteAllDotsAndTimeline();
+      drawDotsAndTimeline();
+      drawBodyDots();
+      sendEntriesToServer();
+
+
   }
   if (event.defaultPrevented) return; // dragged
   // Clear previously selected circle
@@ -183,7 +205,6 @@ function linkClick(event) {
   // Find link with ID
   var fullLinkID = d3.select(this).attr('id');
 
-  // LEFTOFF TODO: Get link IDs
   var linkIDs = fullLinkID.split("-");//replace ( /[^\d.]/g, '' );//slice(-1); // Circle ID and entry ID are the same when we created the circle elements
   var firstNodeLinked = linkIDs[0].replace( /[^\d.]/g, '' );
   var secondNodeLinked = linkIDs[1];
@@ -212,8 +233,6 @@ function linkClick(event) {
   // Update the entry Links attribute if exists
 
   // Write to JSON
-
-    // TODO: Check if this works
 
    updateEntryLinks();
 
@@ -378,12 +397,12 @@ function displayBodyGuidance() {
 
 function displayEditGuidance() {
   // Show the entry attributes
-  $("#guidanceText").text("You can click and drag the dots to reposition them. The line(s) will be redrawn when you save your changes. Unfortunately, you can't edit or remove images.");
+  $("#guidanceText").text("You can click and drag the dots to reposition them. The line(s) will be redrawn when you save your changes. You can also click on any dot to draw a link, or click on a link to remove it. Unfortunately, you can't edit or remove images.");
 }
 
 function displayEditBodyGuidance() {
   // Show the entry attributes
-  $("#guidanceText").text("You can click and drag the dots on the timeline and/or body to reposition them. The line(s) will be redrawn when you save your changes.");
+  $("#guidanceText").text("You can click and drag the dots on the timeline and/or body to reposition them. The line(s) will be redrawn when you save your changes. You can also click on any dot to draw a link, or click on a link to remove it.");
 }
 
 
