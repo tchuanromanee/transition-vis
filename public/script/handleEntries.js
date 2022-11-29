@@ -90,8 +90,6 @@ function deleteVisibleEntry() {
 
   updateEntryLinks();
 
-  //console.log("Updated entriesArray:");
-  //console.log(entriesArray);
 
   //Refresh to draw the circles and timeline again
   deleteAllDotsAndTimeline();
@@ -151,15 +149,13 @@ function circleClick(event) {
   if (!placeNewTextEntry && !placeNewBodyEntry && !placeNewImgEntry) {
     // Click on circle and draw stroke to indicate it has been selected
     d3.select(this).attr("stroke", "#000000");
-    //console.log(links);
     displayEntry(idOfCircle);
   }
   else if (placeNewTextEntry || (placeNewBodyEntry && bodyDotPlaced) || placeNewImgEntry) {
     // If circle has already been clicked, undo it and remove from links
     indexOfCircleinLinks = links.indexOf(idOfCircle);
     if (indexOfCircleinLinks > -1) {
-      links.splice(indexOfCircleinLinks, 1); // 2nd parameter means remove one item only
-      //console.log("Circle removed from links!");
+      links.splice(indexOfCircleinLinks, 1); // 2nd parameter means remove one item only. Circle removed from links
       d3.select(this).attr("stroke", "#ffffff");
     }
     else {
@@ -183,15 +179,50 @@ function linkClick(event) {
   } else {
     return;
   }
-  // Get all links
 
-  // Find link with ID that has the current circle ID
+  // Find link with ID
+  var fullLinkID = d3.select(this).attr('id');
 
-  // Remove the link
+  // LEFTOFF TODO: Get link IDs
+  var linkIDs = fullLinkID.split("-");//replace ( /[^\d.]/g, '' );//slice(-1); // Circle ID and entry ID are the same when we created the circle elements
+  var firstNodeLinked = linkIDs[0].replace( /[^\d.]/g, '' );
+  var secondNodeLinked = linkIDs[1];
+  console.log(firstNodeLinked); //Format of ID is link2-3
+  console.log(secondNodeLinked); //Format of ID is link2-3
+  //currentlyVisibleEntryID = idOfCircle;
+  //var firstNodeLinked  = 0;
+  //var secondNodeLinked = 0;
+
+  // Remove the link from allLinks
+  var newAllLinks = allLinks;
+  // Search for links with currentlyVisibleEntryID
+  for (var i = 0; i < allLinks.length; i++) {
+    if (allLinks[i][0] == firstNodeLinked && allLinks[i][1] == secondNodeLinked) {
+      // Once found, push all links to a separate array
+      newAllLinks.splice(i, 1); // 2nd parameter means remove one item only
+    }
+    if (allLinks[i][1] == firstNodeLinked && allLinks[i][0] == secondNodeLinked) {
+      newAllLinks.splice(i, 1); // 2nd parameter means remove one item only
+    }
+  }
+  allLinks = newAllLinks;
+
+
 
   // Update the entry Links attribute if exists
 
   // Write to JSON
+
+    // TODO: Check if this works
+
+   updateEntryLinks();
+
+    deleteAllDotsAndTimeline();
+    drawDotsAndTimeline();
+    drawBodyDots();
+    resetEntryView();
+    sendEntriesToServer();
+
 
   //if (event.defaultPrevented) return; // dragged
   // Clear previously selected circle
@@ -1070,6 +1101,7 @@ function drawDotsAndTimeline() {
     .attr("y1", timelineCoords[i].y1)
     .attr('x2', timelineCoords[i].x2)
     .attr("y2", timelineCoords[i].y2)
+    .attr("id", newLinkID)
     .attr('class', "timeline")
     .attr("stroke-width", 2)
     .attr("stroke", "black")
