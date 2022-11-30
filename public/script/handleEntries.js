@@ -158,6 +158,7 @@ function circleClick(event) {
       drawDotsAndTimeline();
       drawBodyDots();
       sendEntriesToServer();
+      return;
 
 
   }
@@ -362,6 +363,7 @@ function displayEntry(idOfCircle) {
   $("#saveEntryButton").hide();
   $("#cancelEntryEditButton").hide();
   $("#editTextBodyEntryForm").remove();
+  hideGuidance();
   //$("#editCaptionInput").remove();
 //  $("#e").remove();
   $("#editCaptionInput").remove();
@@ -1083,7 +1085,7 @@ function drawDotsAndTimeline() {
       timelineCoords.push(newLink);
     }
 
-
+    //data-toggle="tooltip" data-placement="top" title="Tooltip on top"
     timelinePoints.push([xPos, yPos]);
     var circleID = "circle" + entriesArray[i].entryID;
     svgTimelineContainer.append('circle')
@@ -1092,14 +1094,15 @@ function drawDotsAndTimeline() {
       .attr('id', circleID)
       .attr('r', 8)
       .attr('class', "timelineCircle")
+      .attr('data-toggle', "tooltip")
+      .attr('data-placement', "top")
+      .attr('title', entriesArray[i].Title)
       .style('fill', emotionColor)
       .on("mouseover", function(d) {
           d3.select(this).style("fill", "#fff8ee");
-          // TODO: Show a tiny tooltip with basic info on the entry
       })
       .on("mouseout", function(d) {
           d3.select(this).style("fill", entriesArray[i].EmotionColor);
-          // TODO: Remove tiny tooltip with basic info on the entry
       })
       .on("click", circleClick)
       .call(d3.drag()
@@ -1134,6 +1137,9 @@ function drawDotsAndTimeline() {
     })
     .on("click", linkClick);
   }
+
+  // Enable tooltips
+  $('[data-toggle="tooltip"]').tooltip();
 
 }
 
