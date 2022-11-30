@@ -1,8 +1,9 @@
 
 
 var svgContainer = d3.select("#main").append("svg")
-  	.attr("width", 560)
-  	.attr("height", 460)
+  	.attr("width", "100%")
+  	.attr("height", "460")
+    .attr("style", "outline: thin solid black;")
   	.attr("id", "bodySVG");
 
 

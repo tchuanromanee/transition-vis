@@ -580,16 +580,17 @@ function dragstarted(d) {
 
             if (currentlyVisibleEntryID == idOfCircle) {
               //calculate the timeline coordinates
+              //Prevent dot from being dragged out of bounds of the svg
               var offsetX = $('#timelineSVG').offset().left;
               var offsetY = $('#timelineSVG').offset().top;
               var x = event.x - offsetX;
               var y = event.y - offsetY;
-              // TODO: Prevent dot from being dragged out of bounds of the svg
-              //https://stackoverflow.com/questions/60163388/javascript-prevent-draggable-div-outside-parent-div
-              var boun = document.getElementById("timelineSVG").offsetWidth-document.getElementById(fullCircleID).offsetWidth;
-              //  if((x>0)&&(x<boun)&&(y>0)&&(y<boun)) {
+
+              var offsetXRight = offsetX + $("#timelineSVG").width();
+              var offsetYBottom = offsetY + $("#timelineSVG").height();
+              if((x>0)&&(event.x>=offsetX)&&(event.x < offsetXRight)&&(y>0)&&(event.y>=offsetY) && (event.y < offsetYBottom)) {
                             d3.select(this).attr("cx", d.x = x).attr("cy", d.y = y);
-                //        }
+                    }
 
 
           }
@@ -638,8 +639,14 @@ function dragstarted(d) {
                       var offsetY = $('#bodySVG').offset().top;
                       bodyPosX = event.x - offsetX;
                       bodyPosY = event.y - offsetY;
-                      // TODO: Prevent dot from being dragged out of bounds of the svg
-                      d3.select(this).attr("cx", bodyPosX).attr("cy", bodyPosY);
+                      var offsetXRight = offsetX + $("#bodySVG").width();
+                      var offsetYBottom = offsetY + $("#bodySVG").height();
+                      //Prevent dot from being dragged out of bounds of the svg
+                      //d3.select(this).attr("cx", bodyPosX).attr("cy", bodyPosY);
+
+                      if((bodyPosX>0)&&(event.x>=offsetX)&&(event.x < offsetXRight)&&(bodyPosY>0)&&(event.y>=offsetY) && (event.y < offsetYBottom)) {
+                          d3.select(this).attr("cx", d.x = bodyPosX).attr("cy", d.y = bodyPosY);
+                      }
                   }
 
                   }
@@ -1129,11 +1136,9 @@ function drawDotsAndTimeline() {
     .attr("stroke", "black")
     .on("mouseover", function(d) {
         d3.select(this).style("stroke", "#fff8ee");
-        // TODO: Show a tiny tooltip with basic info on the entry
     })
     .on("mouseout", function(d) {
         d3.select(this).style("stroke","black");
-        // TODO: Remove tiny tooltip with basic info on the entry
     })
     .on("click", linkClick);
   }
@@ -1173,7 +1178,9 @@ function drawBodyDots() {
 }
 
 var svgTimelineContainer = d3.select("#timelinediv").append("svg")
-  	.attr("width", 960)
+  	.attr("width", "100%")
+    .attr("height", 200)
+    .attr("style", "outline: thin solid red;")
   	.attr("id", "timelineSVG");
 
 
