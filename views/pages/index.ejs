@@ -250,23 +250,27 @@
         <div class="col-sm-11" id="timelinediv">
         </div>
         <div class="col-sm-1" id="addDiv">
-          <button id="addEntryButton" class="btn btn-primary" onclick="showNewEntryMenu();">+</button>
+          <button id="addEntryButton" class="btn btn-primary" onclick="showNewEntryMenu();">Add New</button>
         </div>
       </div>
         <div class= "row">
-          <div class = "col-sm-5" id ="main">
+          <div class = "col-sm-4" id ="main">
 
           </div>
           <div class ="col-sm-7" id="infoDiv">
 
-            <button id="saveEntryButton" onclick="commitEdits();" style="display: none;">Save Changes</button>
-            <button id="cancelEntryEditButton" onclick="cancelEdits();" style="display: none;">Cancel</button>
-            <p id ="guidanceText"></p>
+
             <span id = "dateLabel">&nbsp;</span> <span id = "dateSpan">&nbsp;</span><br />
             <span id = "titleSpan">&nbsp;</span><br />
             <span id = "captionSpan">&nbsp;</span><br />
             <button id="editEntryButton" onclick="editEntry();" style="display: none;">Edit</button>
             <button id="deleteEntryButton" onclick="deleteVisibleEntry();" style="display: none;">Delete</button>
+            <button id="saveEntryButton" onclick="commitEdits();" style="display: none;">Save Changes</button>
+            <button id="cancelEntryEditButton" onclick="cancelEdits();" style="display: none;">Cancel</button>
+            <p id ="guidanceText"></p>
+          </div>
+          <div class = "col-sm-1">
+
           </div>
         </div>
   <!--  <p><%= entriesArray %></p>-->

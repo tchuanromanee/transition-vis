@@ -3,7 +3,6 @@
 var svgContainer = d3.select("#main").append("svg")
   	.attr("width", "100%")
   	.attr("height", "460")
-    .attr("style", "outline: thin solid black;")
   	.attr("id", "bodySVG");
 
 
@@ -33,5 +32,5 @@ path.closePath();
 
 svgContainer.append("path")
     .attr("d", path)
-    .attr("fill", "steelblue")
-    .attr("stroke", "green");
+    .attr("fill", "#EEEEEE")
+    .attr("stroke", "black");

@@ -41,7 +41,7 @@ const newEntry = {
   "Type": "Body",
   "Date": "Tue, 19 Aug 1975 23:15:30 GMT",
   "EmotionScale": 5,
-  "EmotionColor": "#EEEEEE",
+  "EmotionColor": "#fb8072",
   "BodyPositionX": 300,
   "BodyPositionY": 100,
   "TimelineID": 1,

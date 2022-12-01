@@ -1180,7 +1180,7 @@ function drawBodyDots() {
 var svgTimelineContainer = d3.select("#timelinediv").append("svg")
   	.attr("width", "100%")
     .attr("height", 200)
-    .attr("style", "outline: thin solid red;")
+    .attr("style", "borderbottom: 1px solid black;")
   	.attr("id", "timelineSVG");
 
 
