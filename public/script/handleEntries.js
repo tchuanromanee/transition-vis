@@ -119,8 +119,12 @@ function updateEntryLinks() {
 }
 
 function sendEntriesToServer() {
+  var dest = window.location.href.split('/').pop();
+  if (dest == "") {
+    dest = "/";
+  }
 
-  fetch('/', {
+  fetch(dest, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'

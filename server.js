@@ -53,10 +53,11 @@ const newEntry = {
   "ImgID": ""
 };
 
-function readEntries() {
+function readEntries(fileName) {
   console.log("read entries called");
   //Read the JSON file to get the entries
-  fs.readFile("./data/sampleData.json", "utf8", (err, jsonString) => {
+  var fullFileName = "./data/" + fileName;
+  fs.readFile(fullFileName, "utf8", (err, jsonString) => {
     if (err) {
       console.log("File read failed:", err);
       return;
@@ -84,12 +85,13 @@ function readEntries() {
 
 }
 
-function writeEntries() {
-  console.log("write entries called");
+function writeEntries(fileName) {
+  console.log("write entries called to..");
   var newString = JSON.stringify(entriesArray) //undefined
   console.log(typeof(newString)) //undefined
-
-  fs.writeFile("./data/test.json", newString, (err) => {
+  var fullFileName = "./data/" + fileName;
+  console.log(fullFileName);
+  fs.writeFile(fullFileName, newString, (err) => {
   if (err)
     console.log(err);
   else {
@@ -102,7 +104,16 @@ function writeEntries() {
 
 // index page
 app.get('/', function(req, res) {
+  readEntries("test.json");
   res.render('pages/index', {
+    entriesArray: entriesArray
+  });
+});
+
+// test page
+app.get('/test', function(req, res) {
+  readEntries("sampleData.json");
+  res.render('pages/test', {
     entriesArray: entriesArray
   });
 });
@@ -113,7 +124,16 @@ app.post('/', function(request, response){
     //Update the server variable entriesarray with the new info sent from app
     entriesArray = JSON.parse(request.body.entriesArray);
     // Write the changes to the JSON file
-    writeEntries();
+    writeEntries("test.json");
+});
+
+// Access the parse results as request.body
+app.post('/test', function(request, response){
+    console.log(request.body.entriesArray);
+    //Update the server variable entriesarray with the new info sent from app
+    entriesArray = JSON.parse(request.body.entriesArray);
+    // Write the changes to the JSON file
+    writeEntries("test1.json");
 });
 
 app.post('/upload', (req, res) => {
@@ -161,7 +181,7 @@ app.get('/about', function(req, res) {
   res.render('pages/about');
 });
 
-readEntries();
+
 
 app.listen(8080);
 console.log('Server is listening on port 8080');
