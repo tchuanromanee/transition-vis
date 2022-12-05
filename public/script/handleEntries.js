@@ -146,6 +146,7 @@ function circleClick(event) {
     } else {
       return;
     }
+    $('.timelineCircle').tooltip('hide'); // ensure all tooltips are collapsed once confirmed
     // get this circle ID
     //currentlyVisibleEntryID
     var clickedCircleFullID = d3.select(this).attr('id');
@@ -1111,9 +1112,11 @@ function drawDotsAndTimeline() {
       .style('fill', emotionColor)
       .on("mouseover", function(d) {
           d3.select(this).style("fill", "#fff8ee");
+        //  $(this).tooltip('show');
       })
       .on("mouseout", function(d) {
           d3.select(this).style("fill", entriesArray[i].EmotionColor);
+          //$(this).tooltip('hide');
       })
       .on("click", circleClick)
       .call(d3.drag()
