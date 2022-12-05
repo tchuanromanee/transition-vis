@@ -1,6 +1,10 @@
 {
   "name": "transition-vis",
   "version": "1.0.0",
+  "engines": {
+    "node": "18.x",
+    "npm": "8.x"
+  },
   "description": "",
   "main": "app.js",
   "scripts": {
