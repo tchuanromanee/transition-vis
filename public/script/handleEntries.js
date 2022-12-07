@@ -123,6 +123,8 @@ function sendEntriesToServer() {
   if (dest == "") {
     dest = "/";
   }
+  console.log("Sending to...");
+  console.log(dest);
 
   fetch(dest, {
     method: 'POST',

@@ -36,22 +36,6 @@ app.use(function(req, res, next) {
 // use res.render to load up an ejs view file
 
 var entriesArray;
-const newEntry = {
-  "entryID": 4,
-  "Type": "Body",
-  "Date": "Tue, 19 Aug 1975 23:15:30 GMT",
-  "EmotionScale": 5,
-  "EmotionColor": "#fb8072",
-  "BodyPositionX": 300,
-  "BodyPositionY": 100,
-  "TimelineID": 1,
-  "TimelinePositionX": 100,
-  "TimelinePositionY": 75,
-  "Links": [1],
-  "Title": "Top Surgery Consult",
-  "Caption": "Got a consult with Dr. Y. He seemed nice and was able to answer my questions.",
-  "ImgID": ""
-};
 
 function readEntries(fileName) {
   console.log("read entries called");
@@ -66,7 +50,7 @@ function readEntries(fileName) {
       for (var i=0;i<entriesArray.length;i++) {
            console.log(entriesArray[i].entryID);
         }
-        entriesArray.push(newEntry);
+        //entriesArray.push(newEntry);
         //console.log(JSON.stringify(entriesArray))
         //console.log("calling write entries");
         //_callback(); //https://stackoverflow.com/questions/21518381/proper-way-to-wait-for-one-function-to-finish-before-continuing
@@ -118,6 +102,22 @@ app.get('/test', function(req, res) {
   });
 });
 
+// test page
+app.get('/ma', function(req, res) {
+  readEntries("ma.json");
+  res.render('pages/ma', {
+    entriesArray: entriesArray
+  });
+});
+
+// test page
+app.get('/bw', function(req, res) {
+  readEntries("bw.json");
+  res.render('pages/bw', {
+    entriesArray: entriesArray
+  });
+});
+
 // Access the parse results as request.body
 app.post('/', function(request, response){
     console.log(request.body.entriesArray);
@@ -134,6 +134,24 @@ app.post('/test', function(request, response){
     entriesArray = JSON.parse(request.body.entriesArray);
     // Write the changes to the JSON file
     writeEntries("test1.json");
+});
+
+// Access the parse results as request.body
+app.post('/ma', function(request, response){
+    console.log(request.body.entriesArray);
+    //Update the server variable entriesarray with the new info sent from app
+    entriesArray = JSON.parse(request.body.entriesArray);
+    // Write the changes to the JSON file
+    writeEntries("ma.json");
+});
+
+// Access the parse results as request.body
+app.post('/bw', function(request, response){
+    console.log(request.body.entriesArray);
+    //Update the server variable entriesarray with the new info sent from app
+    entriesArray = JSON.parse(request.body.entriesArray);
+    // Write the changes to the JSON file
+    writeEntries("bw.json");
 });
 
 app.post('/upload', (req, res) => {
