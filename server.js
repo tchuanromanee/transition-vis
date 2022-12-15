@@ -118,6 +118,48 @@ app.get('/bw', function(req, res) {
   });
 });
 
+app.get('/ba1', function(req, res) {
+  readEntries("ba1.json");
+  res.render('pages/ba1', {
+    entriesArray: entriesArray
+  });
+});
+
+app.get('/bc2', function(req, res) {
+  readEntries("bc2.json");
+  res.render('pages/bc2', {
+    entriesArray: entriesArray
+  });
+});
+
+app.get('/bg3', function(req, res) {
+  readEntries("bg3.json");
+  res.render('pages/bg3', {
+    entriesArray: entriesArray
+  });
+});
+
+app.get('/bm4', function(req, res) {
+  readEntries("bm4.json");
+  res.render('pages/bm4', {
+    entriesArray: entriesArray
+  });
+});
+
+app.get('/bp5', function(req, res) {
+  readEntries("bp5.json");
+  res.render('pages/bp5', {
+    entriesArray: entriesArray
+  });
+});
+
+app.get('/bh6', function(req, res) {
+  readEntries("bh6.json");
+  res.render('pages/bh6', {
+    entriesArray: entriesArray
+  });
+});
+
 // Access the parse results as request.body
 app.post('/', function(request, response){
     console.log(request.body.entriesArray);
@@ -143,6 +185,7 @@ app.post('/ma', function(request, response){
     entriesArray = JSON.parse(request.body.entriesArray);
     // Write the changes to the JSON file
     writeEntries("ma.json");
+    return;
 });
 
 // Access the parse results as request.body
@@ -152,6 +195,64 @@ app.post('/bw', function(request, response){
     entriesArray = JSON.parse(request.body.entriesArray);
     // Write the changes to the JSON file
     writeEntries("bw.json");
+    return;
+});
+
+// Access the parse results as request.body
+app.post('/ba1', function(request, response){
+    console.log(request.body.entriesArray);
+    //Update the server variable entriesarray with the new info sent from app
+    entriesArray = JSON.parse(request.body.entriesArray);
+    // Write the changes to the JSON file
+    writeEntries("ba1.json");
+    return;
+});
+
+// Access the parse results as request.body
+app.post('/bc2', function(request, response){
+    console.log(request.body.entriesArray);
+    //Update the server variable entriesarray with the new info sent from app
+    entriesArray = JSON.parse(request.body.entriesArray);
+    // Write the changes to the JSON file
+    writeEntries("bc2.json");
+    return;
+});
+
+// Access the parse results as request.body
+app.post('/bg3', function(request, response){
+    console.log(request.body.entriesArray);
+    //Update the server variable entriesarray with the new info sent from app
+    entriesArray = JSON.parse(request.body.entriesArray);
+    // Write the changes to the JSON file
+    writeEntries("bg3.json");
+    return;
+});
+
+app.post('/bm4', function(request, response){
+    console.log(request.body.entriesArray);
+    //Update the server variable entriesarray with the new info sent from app
+    entriesArray = JSON.parse(request.body.entriesArray);
+    // Write the changes to the JSON file
+    writeEntries("bm4.json");
+    return;
+});
+
+app.post('/bp5', function(request, response){
+    console.log(request.body.entriesArray);
+    //Update the server variable entriesarray with the new info sent from app
+    entriesArray = JSON.parse(request.body.entriesArray);
+    // Write the changes to the JSON file
+    writeEntries("bp5.json");
+    return;
+});
+
+app.post('/bh6', function(request, response){
+    console.log(request.body.entriesArray);
+    //Update the server variable entriesarray with the new info sent from app
+    entriesArray = JSON.parse(request.body.entriesArray);
+    // Write the changes to the JSON file
+    writeEntries("bh6.json");
+    return;
 });
 
 app.post('/upload', (req, res) => {

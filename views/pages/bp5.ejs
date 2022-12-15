@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <!-- From breath vis -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Transition Visual</title>
+
+    <!-- J-Query and Bootstrap-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- jQuery Modal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+    <!-- d3 library -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <!--script src="https://d3js.org/d3.v4.min.js"></script-->
+
+    <!-- main script -->
+    <!--script src="script/mainPDF.js"></script-->
+
+
+    <!-- main style sheet-->
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+</head>
+
+<body>
+  <!-- Modal HTML embedded directly into document -->
+  <div id="addNewEntryMenuModal" class="modal">
+    <h2>Add a new point</h2>
+    <p>Choose from one of three options.</p>
+    <button id="addBodyButton" class="btn btn-primary" onclick="addBodyEntry();">Body</button> <br />
+    <button id="addTextOnlyButton" class="btn btn-primary" onclick="addTextOnlyEntry();">Text Only</button> <br />
+    <button id="addImageButton" class="btn btn-primary" onclick="addImageEntry();">Image</button> <br />
+
+    <a href="#" rel="modal:close">Cancel</a>
+  </div>
+  <!-- Modal HTML embedded directly into document -->
+  <div id="addNewBodyEntryModal" class="modal">
+    <h2>New Body Entry</h2>
+    <form id = "addBodyEntryForm">
+      <div class="form-group">
+        <label for="formInputDate">Date of Entry</label>
+        <input type="date" id="formInputDate" name="form-date"
+       value="2022-07-22"
+       min="1920-01-01" max="2040-12-31" required>
+      </div>
+      <div class="form-group">
+        <label for="formInputTitle">Title for Entry</label>
+        <input type="text"  name="form-title" class="form-control" id="formInputTitle" aria-describedby="titleHelp" placeholder="Enter title" required>
+        <small id="titleHelp" class="form-text text-muted">Something descriptive for your entry.</small>
+      </div>
+      <div class="form-group">
+        <label for="formInputCaption">Entry text</label>
+        <textarea class="form-control"  name="form-caption" id="formInputCaption" rows="3"></textarea>
+      </div>
+      Color of your Dot:
+      <div class="btn-group btn-group-toggle" role="group" aria-label="Basic example" data-toggle="buttons">
+        <label class="btn btn-secondary active" id="buttonb-8dd3c7">
+        <input type="radio" name="colorsBody" autocomplete="off" value = "#8dd3c7">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-ffffb3">
+        <input type="radio" name="colorsBody" id="option2" value = "#ffffb3" autocomplete="off">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-bebada">
+        <input type="radio" name="colorsBody" id="option3" value = "#bebada" autocomplete="off">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-fb8072">
+        <input type="radio" name="colorsBody" autocomplete="off" value = "#fb8072">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-80b1d3">
+        <input type="radio" name="colorsBody" autocomplete="off" value = "#80b1d3">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-fdb462">
+        <input type="radio" name="colorsBody" autocomplete="off" value = "#fdb462">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-b3de69">
+        <input type="radio" name="colorsBody" autocomplete="off" value = "#b3de69">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-fccde5">
+        <input type="radio" name="colorsBody" autocomplete="off" value = "#fccde5">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-d9d9d9">
+        <input type="radio" name="colorsBody" autocomplete="off" value = "#d9d9d9">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-bc80bd">
+        <input type="radio" name="colorsBody" autocomplete="off" value = "#bc80bd">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-ccebc5">
+        <input type="radio" name="colorsBody" autocomplete="off" value = "#ccebc5">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttonb-ffed6f">
+        <input type="radio" name="colorsBody" autocomplete="off" value = "#ffed6f">&nbsp;
+        </label>
+      </div>
+      <div class="form-group">
+        <small id="colorHelp" class="form-text text-muted">This color applies to the dot for both body and timeline</small>
+      </div>
+    </form>
+    <button type="submit" class="btn btn-primary" onclick="processNewBodyEntry();">Submit</button>
+    <a href="#" rel="modal:close">Cancel</a>
+  </div>
+  <!-- Modal HTML embedded directly into document -->
+  <div id="addNewTextEntryModal" class="modal">
+    <h2>New Text-Only Entry</h2>
+    <form id ="addTextEntryForm">
+      <div class="form-group">
+        <label for="formInputDate">Date of Entry</label>
+        <input type="date" id="formInputDate" name="form-date"
+       value="2022-07-22"
+       min="1920-01-01" max="2040-12-31" required>
+      </div>
+      <div class="form-group">
+        <label for="formInputTitle">Title for Entry</label>
+        <input type="text"  name="form-title" class="form-control" id="formInputTitle" aria-describedby="titleHelp" placeholder="Enter title" required>
+        <small id="titleHelp" class="form-text text-muted">Something descriptive for your entry.</small>
+      </div>
+      <div class="form-group">
+        <label for="formInputCaption">Entry text</label>
+        <textarea class="form-control"  name="form-caption" id="formInputCaption" rows="3"></textarea>
+      </div>
+      Color of your Dot:
+      <div class="btn-group btn-group-toggle" role="group" aria-label="Basic example" data-toggle="buttons">
+        <label class="btn btn-secondary active" id="buttont-8dd3c7">
+        <input type="radio" name="colorsText" autocomplete="off" value = "#8dd3c7">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-ffffb3">
+        <input type="radio" name="colorsText" id="option2" value = "#ffffb3" autocomplete="off">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-bebada">
+        <input type="radio" name="colorsText" id="option3" value = "#bebada" autocomplete="off">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-fb8072">
+        <input type="radio" name="colorsText"  id="option4" autocomplete="off" value = "#fb8072">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-80b1d3">
+        <input type="radio" name="colorsText" autocomplete="off" value = "#80b1d3">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-fdb462">
+        <input type="radio" name="colorsText" autocomplete="off" value = "#fdb462">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-b3de69">
+        <input type="radio" name="colorsText" autocomplete="off" value = "#b3de69">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-fccde5">
+        <input type="radio" name="colorsText" autocomplete="off" value = "#fccde5">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-d9d9d9">
+        <input type="radio" name="colorsText" autocomplete="off" value = "#d9d9d9">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-bc80bd">
+        <input type="radio" name="colorsText" autocomplete="off" value = "#bc80bd">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-ccebc5">
+        <input type="radio" name="colorsText" autocomplete="off" value = "#ccebc5">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttont-ffed6f">
+        <input type="radio" name="colorsText" autocomplete="off" value = "#ffed6f">&nbsp;
+        </label>
+      </div>
+      <div class="form-group">
+           <small id="colorHelp" class="form-text text-muted">This color applies to the dot for both body and timeline</small>
+      </div>
+      </form>
+      <button type="submit" class="btn btn-primary" onclick="processNewTextEntry();">Submit</button>
+    <a href="#" rel="modal:close">Cancel</a>
+  </div>
+  <!-- Modal HTML embedded directly into document -->
+  <div id="addNewImageEntryModal" class="modal">
+    <h2>New Image Entry</h2>
+    <form id = "addImageEntryForm" enctype="multipart/form-data"  action="/upload" method="POST">
+      <div class="form-group">
+        <label for="formInputDate">Date of Entry</label>
+        <input type="date" id="formInputDate" name="form-date"
+       value="2022-07-22"
+       min="1920-01-01" max="2040-12-31" required>
+      </div>
+      <div class="form-group">
+        <label for="formInputTitle">Title for Entry</label>
+        <input type="text"  name="form-title" class="form-control" id="formInputTitle" aria-describedby="titleHelp" placeholder="Enter title" required>
+        <small id="titleHelp" class="form-text text-muted">Something descriptive for your entry.</small>
+      </div>
+      <div class="form-group">
+        <label for="formInputCaption">Entry text</label>
+        <textarea class="form-control"  name="form-caption" id="formInputCaption" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="formInputImage">Image for Entry</label>
+        <input type="file" name="image" aria-describedby="imageHelp" accept="image/png, image/gif, image/jpg, image/jpeg" required />
+        <small id="imageHelp" class="form-text text-muted">An image for your entry. Only PNG, GIF, or JPEG files are accepted.</small>
+      </div>
+      Color of your dot:
+      <div class="btn-group btn-group-toggle" role="group" aria-label="Basic example" data-toggle="buttons">
+        <label class="btn btn-secondary active" id="buttoni-8dd3c7">
+        <input type="radio" name="colorsImg" autocomplete="off" value = "#8dd3c7">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-ffffb3">
+        <input type="radio" name="colorsImg" id="option2" value = "#ffffb3" autocomplete="off">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-bebada">
+        <input type="radio" name="colorsImg" id="option3" value = "#bebada" autocomplete="off">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-fb8072">
+        <input type="radio" name="colorsImg" autocomplete="off" value = "#fb8072">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-80b1d3">
+        <input type="radio" name="colorsImg" autocomplete="off" value = "#80b1d3">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-fdb462">
+        <input type="radio" name="colorsImg" autocomplete="off" value = "#fdb462">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-b3de69">
+        <input type="radio" name="colorsImg" autocomplete="off" value = "#b3de69">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-fccde5">
+        <input type="radio" name="colorsImg" autocomplete="off" value = "#fccde5">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-d9d9d9">
+        <input type="radio" name="colorsImg" autocomplete="off" value = "#d9d9d9">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-bc80bd">
+        <input type="radio" name="colorsImg" autocomplete="off" value = "#bc80bd">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-ccebc5">
+        <input type="radio" name="colorsImg" autocomplete="off" value = "#ccebc5">&nbsp;
+        </label>
+        <label class="btn btn-secondary" id="buttoni-ffed6f">
+        <input type="radio" name="colorsImg" autocomplete="off" value = "#ffed6f">&nbsp;
+        </label>
+      </div>
+      <div class="form-group">
+           <small id="colorHelp" class="form-text text-muted">This color applies to the dot for both body and timeline</small>
+      </div>
+    </form>
+    <button type="submit" class="btn btn-primary" onclick="processNewImageEntry();">Submit</button>
+    <a href="#" rel="modal:close">Cancel</a>
+
+  </div>
+			<div class = "container-fluid">
+      <div class="row">
+        <div class="col-sm-11" id="timelinediv">
+        </div>
+        <div class="col-sm-1" id="addDiv">
+          <button id="addEntryButton" class="btn btn-primary" onclick="showNewEntryMenu();">Add New</button>
+        </div>
+      </div>
+        <div class= "row">
+          <div class = "col-sm-4" id ="main">
+
+          </div>
+          <div class ="col-sm-7" id="infoDiv">
+
+
+            <span id = "dateLabel">&nbsp;</span> <span id = "dateSpan">&nbsp;</span><br />
+            <span id = "titleSpan">&nbsp;</span><br />
+            <span id = "captionSpan">&nbsp;</span><br />
+            <button id="editEntryButton" onclick="editEntry();" style="display: none;">Edit</button>
+            <button id="deleteEntryButton" onclick="deleteVisibleEntry();" style="display: none;">Delete</button>
+            <button id="saveEntryButton" onclick="commitEdits();" style="display: none;">Save Changes</button>
+            <button id="cancelEntryEditButton" onclick="cancelEdits();" style="display: none;">Cancel</button>
+            <p id ="guidanceText"></p>
+          </div>
+          <div class = "col-sm-1">
+
+          </div>
+        </div>
+  <!--  <p><%= entriesArray %></p>-->
+      </div>
+        <script>
+          // quick and dirty import variables
+          let entriesArray = <%- JSON.stringify(entriesArray) %>;
+        </script>
+        <script src="script/draw.js" type="text/javascript"></script>
+        <script src="script/handleEntries.js" type="text/javascript"></script>
+
+</body>
+
+
+</html>
