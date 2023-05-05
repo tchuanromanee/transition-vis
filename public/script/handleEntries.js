@@ -649,11 +649,11 @@ function dragstarted(d) {
                       var offsetXRight = offsetX + $("#bodySVG").width();
                       var offsetYBottom = offsetY + $("#bodySVG").height();
                       //Prevent dot from being dragged out of bounds of the svg
-                      //d3.select(this).attr("cx", bodyPosX).attr("cy", bodyPosY);
+                      d3.select(this).attr("cx", bodyPosX).attr("cy", bodyPosY);
 
-                      if((bodyPosX>0)&&(event.x>=offsetX)&&(event.x < offsetXRight)&&(bodyPosY>0)&&(event.y>=offsetY) && (event.y < offsetYBottom)) {
-                          d3.select(this).attr("cx", d.x = bodyPosX).attr("cy", d.y = bodyPosY);
-                      }
+                      //if((bodyPosX>0)&&(event.x>=offsetX)&&(event.x < offsetXRight)&&(bodyPosY>0)&&(event.y>=offsetY) && (event.y < offsetYBottom)) {
+                    //      d3.select(this).attr("cx", d.x = bodyPosX).attr("cy", d.y = bodyPosY);
+                    //  }
                   }
 
                   }
